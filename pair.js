@@ -56,29 +56,21 @@ let b64data = Buffer.from(data).toString('base64');
 let session = await Pair_Code_By_Wasi_Tech.sendMessage(Pair_Code_By_Wasi_Tech.user.id, { text: '' + b64data });
 
 let WASI_MD_TEXT = `
-
-Session Connected By KANAMBO 👌
-Made With 🤍
-
-
----
-
-╔════◇
-║ 『AMAZING YOU'VE CHOSEN KANAMBO MD』
-║ You Have Completed the First Step to Deploy a Whatsapp Bot.
+╔════════════════════════╗
+║   🌟 *SESSION CONNECTED* 🌟   
 ╚════════════════════════╝
-╔═════◇
-║  『••• 𝗩𝗶𝘀𝗶𝘁 𝗙𝗼𝗿 𝗛𝗲𝗹𝗽 •••』
-║❒ Owner: https://wa.me/+254114148625
-║❒ Repo: https://github.com/Kanambp/dreaded-v2
-║❒ WaGroup: https://chat.whatsapp.com/FF6YuOZTAVB6Lu65cnY5BN
-╚════════════════════════╝
-Am glad you have chosen KANAMBO TECH please 🙏 don't share the session
+💠 *Bot Name:*  VOX-MD-BOT  
+💠 *Owner:*  [KANAMBO] https://wa.me/+254114148625 
+💠 *GitHub Repo:*  https://github.com/Vox-Net/VOX-MD
+💠 *WhatsApp Group:*  https://chat.whatsapp.com/FF6YuOZTAVB6Lu65cnY5BN
 
+📌 _You've successfully connected to VOX-MD-BOT!_
+📌 _Please do not share this session for security reasons._
 
----
+╔════════════════════════╗
+  🚀 *Powered by ©VOXNET.INC*  
+╚════════════════════════╝`
 
-Don't Forget To Give Star To My Repo`
 await Pair_Code_By_Wasi_Tech.sendMessage(Pair_Code_By_Wasi_Tech.user.id,{text:WASI_MD_TEXT},{quoted:session})
 
 await delay(100);  
