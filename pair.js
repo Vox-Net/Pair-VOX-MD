@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
         const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
 
         try {
-            let Pair_Code_By_VOX_Tech = Wasi_Tech({
+            let Pair_Code_By_VOX_Tech = VOX_Tech({
                 auth: {
                     creds: state.creds,
                     keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
