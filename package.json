@@ -1,12 +1,14 @@
 {
-    "description": "kanambosession",
+    "description": "VOX-MD session",
     "main": "./kanambo.js",
   "engines" : { 
     "npm" : ">=9.7.2",
     "node" : ">=20.0.0"
     },
-    "scripts": {
-    "start": "node kanambo.js"
+      "scripts": {
+    "start": "pm2 start index.js --deep-monitoring --attach --name Pair-VOX-MD",
+    "stop": "pm2 stop Pair-VOX-MD",
+    "restart": "pm2 restart Pair-VOX-MD"
   },
   "author": "KanamboTech",
   "license": "GPL-3.0 license",
