@@ -16,30 +16,39 @@
       overflow: hidden;
       background: black;
     }
-/* Digital 3D Glowing Text */
-.glowing-text {
-  font-size: 3rem;
+/* Digital 3D Glowing Footer */
+.glowing-footer {
+  font-size: 2.5rem;
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
-  color: #00d9ff; /* Digital Cyan */
-  text-shadow: 0 0 10px #00d9ff, 0 0 20px #00d9ff, 0 0 40px #0088ff, 0 0 80px #0055ff;
   position: absolute;
-  top: 5%;
+  bottom: 20px; /* Adjusted to keep it near the container */
   left: 50%;
   transform: translateX(-50%);
-  animation: glow 1.5s infinite alternate;
+  color: #00d9ff;
+  text-shadow: 0 0 10px #00d9ff, 0 0 20px #ff00ff, 0 0 40px #ff0055, 0 0 80px #0088ff;
+  animation: glowCycle 3s infinite alternate;
 }
 
-@keyframes glow {
+/* Animation for Smooth Color Change */
+@keyframes glowCycle {
   0% {
-    text-shadow: 0 0 10px #00d9ff, 0 0 20px #00d9ff, 0 0 40px #0088ff, 0 0 80px #0055ff;
+    text-shadow: 0 0 10px #00d9ff, 0 0 20px #ff00ff, 0 0 40px #ff0055, 0 0 80px #0088ff;
+  }
+  25% {
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff, 0 0 40px #ff0088, 0 0 80px #00ff88;
+  }
+  50% {
+    text-shadow: 0 0 10px #ff0055, 0 0 20px #0088ff, 0 0 40px #00ffff, 0 0 80px #ff00ff;
+  }
+  75% {
+    text-shadow: 0 0 10px #00ff88, 0 0 20px #ff0088, 0 0 40px #0088ff, 0 0 80px #00d9ff;
   }
   100% {
-    text-shadow: 0 0 20px #00ffff, 0 0 40px #00d9ff, 0 0 80px #0088ff, 0 0 100px #0055ff;
+    text-shadow: 0 0 10px #0088ff, 0 0 20px #00d9ff, 0 0 40px #ff00ff, 0 0 80px #ff0055;
   }
 }
-    }
     /* Full-Screen Background GIF */
 .waves {
   position: fixed;
@@ -149,9 +158,6 @@
   <!-- Water Waves Background -->
   <div class="waves"></div>
 
-<!-- 3D Glowing Text -->
-<h1 class="glowing-text">VOX-MD-BOT</h1>
-  
   <!-- Pairing Code UI -->
   <div class="container">
     <div class="box">
@@ -224,6 +230,7 @@
       }
     });
   </script>
-
+<!-- 3D Glowing Footer -->
+<h1 class="glowing-footer">VOX-MD-BOT</h1>
 </body>
 </html>
