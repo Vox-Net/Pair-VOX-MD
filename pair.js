@@ -40,22 +40,21 @@ router.get('/', async (req, res) => {
                 browser: ["VOX-MD-BOT (Linux)", "", ""]
             });
 
-            if (!Pairing_Session.authState.creds.registered) {
-                await delay(1500);
-                num = num.replace(/[^0-9]/g, '');
-                const code = await Pairing_Session.requestPairingCode(num);
-                
-                if (!res.headersSent) {
-                    res.send({ code });
-                }
-            }
-
             Pairing_Session.ev.on('creds.update', saveCreds);
 
             Pairing_Session.ev.on("connection.update", async (s) => {
-                const { connection, lastDisconnect } = s;
+                const { connection, lastDisconnect, qr } = s;
+
+                if (qr) {
+                    console.log("🔹 Pairing Code Generated:", qr);
+                    if (!res.headersSent) {
+                        res.send({ code: qr });
+                    }
+                }
 
                 if (connection === "open") {
+                    console.log("✅ Connected to WhatsApp!");
+
                     await delay(5000);
                     let data = fs.readFileSync(`${sessionPath}/creds.json`);
                     await delay(800);
@@ -92,10 +91,22 @@ router.get('/', async (req, res) => {
                     await Pairing_Session.ws.close();
                     return removeFile(sessionPath);
                 } else if (connection === "close" && lastDisconnect?.error?.output?.statusCode !== 401) {
+                    console.log("🔄 Reconnecting...");
                     await delay(10000);
                     START_VOX_MD_PAIRING();
                 }
             });
+
+            // If number is provided, request pairing
+            if (num) {
+                num = num.replace(/[^0-9]/g, '');
+                const code = await Pairing_Session.requestPairingCode(num);
+                console.log("🔹 Pairing Code:", code);
+
+                if (!res.headersSent) {
+                    res.send({ code });
+                }
+            }
 
             // Automatically delete expired session after a set time
             setTimeout(() => {
@@ -103,7 +114,7 @@ router.get('/', async (req, res) => {
             }, 60000); // Session expires after 60 seconds
 
         } catch (err) {
-            console.log("Service Restarted");
+            console.log("❌ Service Restarted:", err);
             removeFile(sessionPath);
 
             if (!res.headersSent) {
