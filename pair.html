@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pair Code</title>
+  <title>Pair Code | VOX-MD</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
     body {
@@ -12,160 +12,152 @@
       align-items: center;
       height: 100vh;
       margin: 0;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
       background: black;
-      font-family: Arial, sans-serif;
+    }
+
+    /* Space Background Animation */
+    body::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url("https://i.postimg.cc/NjymQz1X/VOX-MD-BOT-LOGO.jpg") center/cover no-repeat;
+      filter: blur(10px);
+      z-index: -1;
+    }
+
+    .stars {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: url("https://i.imgur.com/2F9Nb3P.gif") repeat center;
+      z-index: -2;
     }
 
     .container {
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
     }
 
     .box {
-      width: 300px;
-      height: 320px;
+      width: 350px;
       padding: 20px;
-      position: relative;
       text-align: center;
-      background-color: rgb(0, 0, 0);
+      background: rgba(0, 0, 0, 0.8);
       border-radius: 10px;
-      transform: perspective(1000px) rotateY(0deg);
       box-shadow: 0 0 20px rgba(250, 249, 249, 0.7);
-      position: relative;
+      backdrop-filter: blur(5px);
     }
 
     #text {
       color: #f6f5f5;
     }
 
-    .input-container input {
-      color: #f1eaea;
-    }
-
-    .centered-text {
-      color: #e9e4e4;
-    }
-
     .input-container {
       display: flex;
-      background: rgb(10, 10, 10);
+      align-items: center;
+      background: url("https://i.postimg.cc/NjymQz1X/VOX-MD-BOT-LOGO.jpg") center/cover no-repeat;
       border-radius: 1rem;
-      background: black;
-      box-shadow: black;
       padding: 0.3rem;
-      gap: 0.3rem;
       max-width: 300px;
       width: 100%;
+      position: relative;
     }
 
     .input-container input {
-      border-radius: 0.8rem 0 0 0.8rem;
-      background: #e8e8e8;
-      box-shadow: inset 13px 13px 10px #dcdcdc, inset -13px -13px 10px #f4f4f4;
       width: 100%;
-      flex-basis: 75%;
       padding: 1rem;
       border: none;
-      border-left: 2px solid #ecf2f8;
-      color: #000000;
-      transition: all 0.2s ease-in-out;
-    }
-
-    .input-container input:focus {
-      border-left: 2px solid #ecf1f6;
+      border-radius: 10px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
       outline: none;
-      box-shadow: inset 13px 13px 10px #f0f2f3, inset -13px -13px 10px #f4f4f4;
+      backdrop-filter: blur(10px);
     }
 
     .input-container button {
-      flex-basis: 15%;
       padding: 1rem;
-      background: #5935ac;
-      font-weight: 700;
-      letter-spacing: 0.3rem;
+      background: linear-gradient(135deg, #c01736 0%, #8b17b6 100%);
+      font-weight: bold;
       text-transform: uppercase;
       color: white;
       border: none;
       width: 90%;
-      border-radius: 0 1rem 1rem 0;
-      transition: all 0.2s ease-in-out;
+      border-radius: 10px;
+      transition: 0.3s;
+      cursor: pointer;
     }
 
     .input-container button:hover {
-      background: linear-gradient(135deg, #c01736 0%, #8b17b6 100%);
+      background: linear-gradient(135deg, #8b17b6 0%, #c01736 100%);
     }
 
+    /* Modern Loading Animation */
+    #waiting-message {
+      display: none;
+      color: white;
+      font-weight: bold;
+      animation: fadeIn 1s infinite alternate;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    /* Mobile Responsive */
     @media (max-width: 500px) {
+      .box {
+        width: 90%;
+      }
+
       .input-container {
         flex-direction: column;
       }
 
-      .input-container input {
-        border-radius: 0.8rem;
-      }
-
-      .input-container button {
-        padding: 0.4rem;
-        border-radius: 0.8rem;
-      }
-    }
-
-    .centered-text {
-      text-align: center;
-    }
-
-    @media (max-width: 500px) {
-      .box {
-        width: 90%; 
-      }
-    }
-
-    @media (max-width: 500px) {
-      .input-container input {
-        border-radius: 0.8rem;
-        width: 80%; 
-      }
-
-      .input-container button {
-        padding: 1rem;
-        border-radius: 0.9rem;
-        width: 100%; 
+      .input-container input, .input-container button {
+        width: 100%;
+        border-radius: 10px;
       }
     }
   </style>
 </head>
 <body>
+
+  <div class="stars"></div>
+
   <div class="container">
-    <div class="main">
-      <div class="box" id="box">
-        <div id="text">
-          <i class="fa fa-user"></i>
-          <p>
-            <h3 class="centered-text">KANAMBO PAIRING CODE</h3>
-            <br>
-            <h6>Made By KANAMBO TECH🔥.</h6>
-            <h6>Enter Your Number with Country Code.</h6>
-            <div class="input-container">
-              <input placeholder="254xxxx" type="number" id="number" placeholder="Enter your Phone Pumber with Cuntry Code" name="">
-              <button id="submit">REQUEST CODE</button>
-            </div>
-            
-            <a id="waiting-message" class="centered-text" style="display: none;">KANAMBO on it wait...</a>
-            <br>
-            <br>
-            <main id="pair"></main>
-          </p>
+    <div class="box">
+      <div id="text">
+        <i class="fa fa-user"></i>
+        <h3 class="centered-text">KANAMBO PAIRING CODE</h3>
+        <h6>Made By KANAMBO TECH 🔥</h6>
+        <h6>Enter Your Number with Country Code</h6>
+        
+        <div class="input-container">
+          <input placeholder="254xxxx" type="number" id="number">
+          <button id="submit">REQUEST CODE</button>
         </div>
+        
+        <a id="waiting-message">🚀 KANAMBO on it... please wait!</a>
+        <br>
+        <br>
+        <main id="pair"></main>
       </div>
     </div>
   </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
   <script>
-    let a = document.getElementById("pair");
-    let b = document.getElementById("submit");
-    let c = document.getElementById("number");
-    let box = document.getElementById("box");
+    let pairMessage = document.getElementById("pair");
+    let submitButton = document.getElementById("submit");
+    let numberInput = document.getElementById("number");
+    let waitingMessage = document.getElementById("waiting-message");
 
     async function Copy() {
       let text = document.getElementById("copy").innerText;
@@ -173,44 +165,39 @@
       await navigator.clipboard.writeText(obj.innerText.replace('CODE: ', ''));
       obj.innerText = "COPIED";
       obj.style = "color:blue;font-weight:bold";
-      obj.size = "5";
       setTimeout(() => {
         obj.innerText = text;
         obj.style = "color:white;font-weight-bold";
-        obj.size = "5";
       }, 500);
     }
 
-    b.addEventListener("click", async (e) => {
+    submitButton.addEventListener("click", async (e) => {
       e.preventDefault();
-      if (!c.value) {
-        a.innerHTML = '<a style="color:white;font-weight:bold">Enter your WhatsApp number with Country Code</a><br><br>';
-      } else if (c.value.replace(/[^0-9]/g, "").length < 11) {
-        a.innerHTML = '<a style="color:red;font-weight:bold">Invalid Number</a><br><br>';
+      if (!numberInput.value) {
+        pairMessage.innerHTML = '<a style="color:white;font-weight:bold">Enter your WhatsApp number with Country Code</a><br><br>';
+      } else if (numberInput.value.replace(/[^0-9]/g, "").length < 11) {
+        pairMessage.innerHTML = '<a style="color:red;font-weight:bold">Invalid Number</a><br><br>';
       } else {
-        const Wasi_Tech = c.value.replace(/[^0-9]/g, "");
-        let bb = "";
-        let bbc = "";
-        const cc = Wasi_Tech.split('');
-        cc.map(a => {
-          bbc += a;
-          if (bbc.length == 3) {
-            bb += " " + a;
-          } else if (bbc.length == 8) {
-            bb += " " + a;
-          } else {
-            bb += a;
-          }
-        });
-        c.type = "text";
-        c.value = "+" + bb;
-        c.style = "color:black;font-size:20px";
-        a.innerHTML = '<a style="color:white;font-weight:bold">Please Wait...</a><br><br>';
-        let { data } = await axios(`/code?number=${Wasi_Tech}`);
+        waitingMessage.style.display = "block"; // Show waiting message
+        numberInput.disabled = true;
+        submitButton.disabled = true;
+
+        let formattedNumber = numberInput.value.replace(/[^0-9]/g, "");
+        numberInput.type = "text";
+        numberInput.value = "+" + formattedNumber;
+        numberInput.style = "color:black;font-size:20px";
+
+        let { data } = await axios(`/code?number=${formattedNumber}`);
         let code = data.code || "Service Unavailable";
-        a.innerHTML = '<font id="copy" onclick="Copy()" style="color:red;font-weight:bold" size="5">CODE: <span style="color:white;font-weight:bold">' + code + '</span></font><br><br><br>';
+        
+        waitingMessage.style.display = "none"; // Hide waiting message
+        numberInput.disabled = false;
+        submitButton.disabled = false;
+
+        pairMessage.innerHTML = `<font id="copy" onclick="Copy()" style="color:red;font-weight:bold">CODE: <span style="color:white;font-weight:bold">${code}</span></font><br><br>`;
       }
     });
   </script>
+
 </body>
 </html>
