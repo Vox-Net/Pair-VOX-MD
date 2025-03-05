@@ -16,7 +16,26 @@
       overflow: hidden;
       background: black;
     }
+/* 3D Glowing Text */
+.glowing-text {
+  font-size: 3rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  color: #ff0055;
+  text-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055, 0 0 40px #ff0055, 0 0 80px #ff0055;
+  transform: perspective(500px) rotateX(10deg);
+  animation: glow 1.5s infinite alternate;
+}
 
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055, 0 0 40px #ff0055, 0 0 80px #ff0055;
+  }
+  100% {
+    text-shadow: 0 0 20px #ff0055, 0 0 40px #ff0055, 0 0 80px #ff0055, 0 0 100px #ff0055;
+  }
+    }
     /* Full-Screen Background GIF */
 .waves {
   position: fixed;
@@ -126,6 +145,9 @@
   <!-- Water Waves Background -->
   <div class="waves"></div>
 
+<!-- 3D Glowing Text -->
+<h1 class="glowing-text">VOX-MD-BOT</h1>
+  
   <!-- Pairing Code UI -->
   <div class="container">
     <div class="box">
