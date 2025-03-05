@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VOX-MD PAIRING </title>
+  <title>Pair Code | VOX-MD</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
     body {
@@ -17,12 +17,13 @@
       background: black;
     }
 
-    /* Space Background Animation */
-    .stars {
+    /* Water Waves Background */
+    .waves {
       position: fixed;
       width: 100%;
       height: 100%;
-      background: url("https://i.imgur.com/2F9Nb3P.gif") repeat center;
+      background: url("https://media.giphy.com/media/l3q2vSbH7lsG3TuLC/giphy.gif") repeat center;
+      background-size: cover;
       z-index: -1;
     }
 
@@ -122,13 +123,15 @@
 </head>
 <body>
 
-  <div class="stars"></div>
+  <!-- Water Waves Background -->
+  <div class="waves"></div>
 
+  <!-- Pairing Code UI -->
   <div class="container">
     <div class="box">
       <div id="text">
         <i class="fa fa-user"></i>
-        <h3 class="centered-text">VOX-MD PAIRING CODE</h3>
+        <h3 class="centered-text">KANAMBO PAIRING CODE</h3>
         <h6>Made By KANAMBO TECH 🔥</h6>
         <h6>Enter Your Number with Country Code</h6>
         
@@ -137,13 +140,17 @@
           <button id="submit">REQUEST CODE</button>
         </div>
         
-        <a id="waiting-message">🚀 KANAMBO on it... please wait!</a>
-        <br>
-        <br>
+        <a id="waiting-message">🌊 KANAMBO on it... please wait!</a>
+        <br><br>
         <main id="pair"></main>
       </div>
     </div>
   </div>
+
+  <!-- Background Wave Sound -->
+  <audio autoplay loop>
+    <source src="https://www.fesliyanstudios.com/play-mp3/4384" type="audio/mpeg">
+  </audio>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
   <script>
