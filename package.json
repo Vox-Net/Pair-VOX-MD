@@ -6,7 +6,7 @@
     "node" : ">=20.0.0"
     },
       "scripts": {
-    "start": "pm2 start kanambo.js --deep-monitoring --attach --name Pair-VOX-MD",
+    "start": "pm2 start kanambo.js --watch--name Pair-VOX-MD",
     "stop": "pm2 stop Pair-VOX-MD",
     "restart": "pm2 restart Pair-VOX-MD"
   },
