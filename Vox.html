@@ -228,14 +228,27 @@
     }
     getBatteryInfo();
 
-    // Fetch IP, Country, and Region
-    fetch('https://ip-api.com/json/')
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('ip-btn').innerText = `IP Address: ${data.query}`;
-        document.getElementById('country-btn').innerText = `Country: ${data.country}`;
-        document.getElementById('region-btn').innerText = `Region: ${data.regionName}`;
-      });
+    // Fetch IP Address
+fetch('https://api64.ipify.org?format=json')
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('ip-btn').innerText = `IP Address: ${data.ip}`;
+  })
+  .catch(() => {
+    document.getElementById('ip-btn').innerText = "IP Address: Unable to fetch";
+  });
+
+// Fetch Country & Region Name
+fetch('https://ipinfo.io/json')
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('country-btn').innerText = `Country: ${data.country}`;
+    document.getElementById('region-btn').innerText = `Region: ${data.region}`;
+  })
+  .catch(() => {
+    document.getElementById('country-btn').innerText = "Country: Unable to fetch";
+    document.getElementById('region-btn').innerText = "Region: Unable to fetch";
+  });
   </script>
 
 </body>
