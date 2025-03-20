@@ -184,11 +184,12 @@
   <script>
     // Update Clock
     function updateClock() {
-      const now = new Date();
-      document.getElementById('clock').innerText = now.toLocaleTimeString();
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+  const now = new Date();
+  document.getElementById('clock').innerText = now.toLocaleTimeString('en-US', { hour12: true });
+}
+
+setInterval(updateClock, 1000);
+updateClock();
 
     // Battery Status
     function getBatteryInfo() {
