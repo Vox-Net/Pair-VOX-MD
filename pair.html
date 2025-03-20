@@ -199,7 +199,7 @@
   </div>
 
   <!-- Background Music -->
-  <audio id="background-music" autoplay loop>
+  <audio id="background-music" autoplay loop muted>
     <source src="https://files.catbox.moe/m68e4q.mp3" type="audio/mpeg">
   </audio>
 
@@ -209,6 +209,13 @@
   <script>
     let music = document.getElementById("background-music");
     let musicToggle = document.getElementById("music-toggle");
+
+    // Ensure the music plays instantly
+    window.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        music.muted = false;
+      }, 500);
+    });
 
     musicToggle.addEventListener("click", () => {
       if (music.paused) {
