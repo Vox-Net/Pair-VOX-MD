@@ -1,8 +1,10 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>VOXNET.Inc</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
     /* Modern Background Styling */
     body {
       display: flex;
@@ -12,41 +14,117 @@
       height: 100vh;
       margin: 0;
       background: linear-gradient(135deg, #1e1e2f, #252545, #2d2d5b);
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      text-align: center;
       overflow: hidden;
       position: relative;
     }
 
-    /* Modern Button Styling */
+    /* Glassmorphic Container */
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+      max-width: 400px;
+      text-align: center;
+    }
+
+    /* Button Styling */
     .btn {
       width: 240px;
-      padding: 14px 24px;
-      background: #007bff;
+      padding: 14px;
+      background: rgba(0, 123, 255, 0.8);
       border: none;
       border-radius: 10px;
-      color: #ffffff;
+      color: white;
       font-size: 18px;
-      font-family: 'Poppins', sans-serif;
       text-transform: uppercase;
       font-weight: bold;
       cursor: pointer;
       transition: 0.3s;
-      margin: 12px;
+      margin: 10px;
       text-align: center;
       box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
     }
 
     .btn:hover {
-      background: #0056b3;
+      background: rgba(0, 86, 179, 0.9);
       box-shadow: 0 6px 15px rgba(0, 86, 179, 0.5);
     }
-  </style></head>
+
+    /* User Info Styling */
+    .user-info {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #ddd;
+    }
+
+    /* Battery Styling */
+    #batteryLevel {
+      font-weight: bold;
+      color: #4CAF50;
+    }
+  </style>
+</head>
 <body>
-  <!-- Modern Buttons -->
-  <button onclick="window.open('/pair')" class="btn">Pair Code</button>
-  <button onclick="window.open('/qr')" class="btn">Scan QR Code</button>
-  <button onclick="window.open('https://github.com/Vox-Net/VOX-MD')" class="btn">Bot Repo</button>
-  <button onclick="window.open('https://github.com/Kanambp/KANAMBO-QR')" class="btn">QR Code Repo</button>
-  <button onclick="window.open('https://wa.me/254114148625')" class="btn">Contact Kanambo</button>
-  <button onclick="window.open('https://chat.whatsapp.com/Byx7wdqizJXB79RKFKsefb')" class="btn">Join Group</button>
+  
+  <!-- Glassmorphic Info Box -->
+  <div class="container">
+    <h2>Welcome to <span style="color:#007bff;">VOXNET.Inc</span></h2>
+    <p>Your Smart Digital Hub</p>
+
+    <!-- User Information -->
+    <div class="user-info">
+      <p><strong>IP Address:</strong> <span id="ipAddress">Loading...</span></p>
+      <p><strong>Device:</strong> <span id="deviceModel">Detecting...</span></p>
+      <p><strong>Battery:</strong> <span id="batteryLevel">Checking...</span></p>
+    </div>
+
+    <!-- Modern Buttons -->
+    <button onclick="window.open('/pair')" class="btn">Pair Code</button>
+    <button onclick="window.open('/qr')" class="btn">Scan QR Code</button>
+    <button onclick="window.open('https://github.com/Vox-Net/VOX-MD')" class="btn">Bot Repo</button>
+    <button onclick="window.open('https://github.com/Kanambp/KANAMBO-QR')" class="btn">QR Code Repo</button>
+    <button onclick="window.open('https://wa.me/254114148625')" class="btn">Contact Kanambo</button>
+    <button onclick="window.open('https://chat.whatsapp.com/Byx7wdqizJXB79RKFKsefb')" class="btn">Join Group</button>
+  </div>
+
+  <!-- JavaScript to Fetch User IP, Device Model, and Battery Info -->
+  <script>
+    // Fetch User's IP Address
+    fetch('https://api64.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => document.getElementById('ipAddress').innerText = data.ip)
+      .catch(() => document.getElementById('ipAddress').innerText = "Unavailable");
+
+    // Detect Device Model
+    function getDeviceInfo() {
+      const userAgent = navigator.userAgent;
+      let device = "Unknown Device";
+
+      if (/iPhone/i.test(userAgent)) device = "iPhone";
+      else if (/iPad/i.test(userAgent)) device = "iPad";
+      else if (/Android/i.test(userAgent)) device = "Android Device";
+      else if (/Windows/i.test(userAgent)) device = "Windows PC";
+      else if (/Macintosh/i.test(userAgent)) device = "MacBook";
+      else if (/Linux/i.test(userAgent)) device = "Linux Machine";
+
+      document.getElementById('deviceModel').innerText = device;
+    }
+    getDeviceInfo();
+
+    // Get Battery Percentage
+    navigator.getBattery().then(battery => {
+      function updateBatteryStatus() {
+        document.getElementById('batteryLevel').innerText = Math.round(battery.level * 100) + "%";
+      }
+      updateBatteryStatus();
+      battery.addEventListener('levelchange', updateBatteryStatus);
+    }).catch(() => document.getElementById('batteryLevel').innerText = "Unavailable");
+  </script>
+
 </body>
-            </html>
+</html>
