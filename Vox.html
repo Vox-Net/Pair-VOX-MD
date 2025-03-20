@@ -231,10 +231,10 @@
     fetch('https://api64.ipify.org?format=json')
       .then(response => response.json())
       .then(data => {
-        document.getElementById('device-info-btn').innerText = `IP: ${data.ip} | Device: ${navigator.userAgent}`;
+        document.getElementById('device-info-btn').innerText = `IP: ${data.ip}`;
       })
       .catch(() => {
-        document.getElementById('device-info-btn').innerText = "IP: Unable to fetch | Device: Unknown";
+        document.getElementById('device-info-btn').innerText = "IP: Unable to fetch";
       });
 
   </script>
