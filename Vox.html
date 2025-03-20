@@ -21,6 +21,23 @@
       overflow: hidden;
     }
 
+    /* Welcome Message */
+    .welcome-message {
+      font-size: 20px;
+      font-weight: bold;
+      color: #00eaff;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
+      animation: fadeOut 4s ease-in-out forwards;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+
     /* Glowing Green Container */
     .container {
       background: rgba(0, 255, 0, 0.15);
@@ -32,6 +49,7 @@
       text-align: center;
       position: relative;
       z-index: 10;
+      display: none; /* Initially hidden */
     }
 
     /* Modern Stylish Buttons */
@@ -59,40 +77,6 @@
       transform: scale(1.05);
     }
 
-    /* User Info Styling */
-    .user-info {
-      margin-top: 20px;
-      font-size: 16px;
-      color: #ddd;
-    }
-
-    /* Battery Status Button */
-    .battery-btn {
-      width: 220px;
-      padding: 12px;
-      font-size: 16px;
-      font-weight: bold;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      transition: 0.3s;
-    }
-
-    .battery-btn.normal {
-      background: #32CD32;
-      box-shadow: 0 0 12px #32CD32;
-    }
-
-    .battery-btn.low {
-      background: #FF4500;
-      box-shadow: 0 0 12px #FF4500;
-    }
-
-    .battery-btn.charging {
-      background: #008CFF;
-      box-shadow: 0 0 12px #008CFF;
-    }
-
     /* Digital Clock */
     .clock {
       margin-top: 20px;
@@ -111,25 +95,19 @@
     .clock:hover {
       transform: scale(1.1);
     }
-
   </style>
 </head>
 <body>
+
+  <!-- Welcome Message -->
+  <div class="welcome-message">
+    Welcome to VOXNET.Inc! We are here to serve you. Feel at home under the courtesy of <strong>MR. PETER KANAMBO</strong>.
+  </div>
 
   <!-- Cyberpunk Glowing Container -->
   <div class="container">
     <h2>Welcome to <span style="color:#00eaff;">VOXNET.Inc</span></h2>
     <p>Your Smart Digital Hub</p>
-
-    <!-- User Information -->
-    <div class="user-info">
-      <p><strong>IP Address:</strong> <span id="ipAddress">Loading...</span></p>
-      <p><strong>Device:</strong> <span id="deviceModel">Detecting...</span></p>
-      <p><strong>Type:</strong> <span id="deviceType">Checking...</span></p>
-    </div>
-
-    <!-- Battery Info -->
-    <button id="batteryBtn" class="battery-btn normal">Battery: Checking...</button>
 
     <!-- Stylish Buttons -->
     <button onclick="window.open('/pair')" class="btn">Pair Code</button>
@@ -143,63 +121,12 @@
     <button id="clock" class="clock">Loading Time...</button>
   </div>
 
-  <!-- JavaScript for Device, Battery, and Time -->
+  <!-- JavaScript -->
   <script>
-    // Fetch User's IP Address
-    fetch('https://api64.ipify.org?format=json')
-      .then(response => response.json())
-      .then(data => document.getElementById('ipAddress').innerText = data.ip)
-      .catch(() => document.getElementById('ipAddress').innerText = "Unavailable");
-
-    // Detect Device Model & Type
-    function getDeviceInfo() {
-      const userAgent = navigator.userAgent;
-      let device = "Unknown Device";
-      let type = "Unknown";
-      let brand = "Unknown Brand";
-
-      let brands = ["Samsung", "Infinix", "Tecno", "Huawei", "Xiaomi", "OnePlus", "Oppo", "Vivo", "Realme", "Nokia"];
-      let foundBrand = brands.find(b => userAgent.includes(b)) || "Android Device";
-
-      if (/iPhone/i.test(userAgent)) {
-        device = "iPhone";
-        type = "Phone";
-      } else if (/iPad/i.test(userAgent)) {
-        device = "iPad";
-        type = "Tablet";
-      } else if (/Android/i.test(userAgent)) {
-        device = foundBrand;
-        type = "Phone";
-      } else if (/Windows/i.test(userAgent) || /Macintosh/i.test(userAgent) || /Linux/i.test(userAgent)) {
-        device = /Windows/i.test(userAgent) ? "Windows PC" : (/Macintosh/i.test(userAgent) ? "MacBook" : "Linux Machine");
-        type = "Desktop";
-      }
-
-      document.getElementById('deviceModel').innerText = device;
-      document.getElementById('deviceType').innerText = type;
-
-      // Pop-up for detected brand
-      alert("Device Type: " + type + "\nBrand: " + device);
-    }
-    getDeviceInfo();
-
-    // Battery Status
-    navigator.getBattery().then(battery => {
-      function updateBatteryStatus() {
-        const batteryBtn = document.getElementById('batteryBtn');
-        let batteryLevel = Math.round(battery.level * 100) + "%";
-        let chargingStatus = battery.charging ? "⚡ Charging" : "🔋 Not Charging";
-
-        batteryBtn.innerText = `Battery: ${batteryLevel} | ${chargingStatus}`;
-
-        batteryBtn.classList.toggle("charging", battery.charging);
-        batteryBtn.classList.toggle("low", battery.level < 0.2 && !battery.charging);
-        batteryBtn.classList.toggle("normal", battery.level >= 0.2 && !battery.charging);
-      }
-      updateBatteryStatus();
-      battery.addEventListener('levelchange', updateBatteryStatus);
-      battery.addEventListener('chargingchange', updateBatteryStatus);
-    });
+    // Show main container after welcome message disappears
+    setTimeout(() => {
+      document.querySelector('.container').style.display = 'block';
+    }, 4000); // 4 seconds delay
 
     // Digital Clock
     function updateClock() {
