@@ -229,39 +229,58 @@
 
 </script>
   <!-- Axios Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
 
-  <!-- JavaScript -->
-  <script>
-    let pairMessage = document.getElementById("pair");
-    let submitButton = document.getElementById("submit");
-    let numberInput = document.getElementById("number");
-    let waitingMessage = document.getElementById("waiting-message");
+<!-- JavaScript -->
+<script>
+  let pairMessage = document.getElementById("pair");
+  let submitButton = document.getElementById("submit");
+  let numberInput = document.getElementById("number");
+  let waitingMessage = document.getElementById("waiting-message");
 
-    async function Copy() {
-      let text = document.getElementById("copy").innerText;
-      let obj = document.getElementById("copy");
-      await navigator.clipboard.writeText(obj.innerText.replace('CODE: ', ''));
-      obj.innerText = "COPIED";
-      obj.style = "color:blue;font-weight:bold";
-      setTimeout(() => {
-        obj.innerText = text;
-        obj.style = "color:white;font-weight:bold";
-      }, 500);
-    }
+  async function Copy() {
+    let text = document.getElementById("copy").innerText.replace("CODE: ", "");
+    await navigator.clipboard.writeText(text);
 
-    submitButton.addEventListener("click", async (e) => {
-      e.preventDefault();
-      if (!numberInput.value) {
-        pairMessage.innerHTML = '<a style="color:white;font-weight:bold">Enter your WhatsApp number with Country Code</a><br><br>';
-      } else {
-        waitingMessage.style.display = "block";
+    // Show a pop-up message when copied
+    let popup = document.createElement("div");
+    popup.innerText = "Code Copied!";
+    popup.style = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: black;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      z-index: 9999;
+    `;
+    document.body.appendChild(popup);
+
+    setTimeout(() => {
+      popup.remove();
+    }, 1000); // Popup disappears after 1 second
+  }
+
+  submitButton.addEventListener("click", async (e) => {
+    e.preventDefault();
+    if (!numberInput.value) {
+      pairMessage.innerHTML = '<a style="color:white;font-weight:bold">Enter your WhatsApp number with Country Code</a><br><br>';
+    } else {
+      waitingMessage.style.display = "block";
+      try {
         let { data } = await axios(`/code?number=${numberInput.value}`);
+        pairMessage.innerHTML = `<font id="copy" onclick="Copy()" style="cursor:pointer; color:white; font-weight:bold">CODE: <span>${data.code || "Service Unavailable"}</span></font><br><br>`;
+      } catch (error) {
+        pairMessage.innerHTML = '<a style="color:red;font-weight:bold">Error fetching code. Try again!</a><br><br>';
+      } finally {
         waitingMessage.style.display = "none";
-        pairMessage.innerHTML = `<font id="copy" onclick="Copy()">CODE: <span>${data.code || "Service Unavailable"}</span></font><br><br>`;
       }
-    });
-
+    }
+  });
+</script>
   </script>
 
   <!-- 3D Glowing Footer -->
