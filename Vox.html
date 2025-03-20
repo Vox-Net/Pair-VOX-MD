@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <title>VOXNET.Inc</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  
   <style>
-    /* Cyberpunk Neon Background */
+    /* Machine-Like Animated Background */
     body {
       display: flex;
       flex-direction: column;
@@ -14,82 +14,78 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      background: url('https://i.imgur.com/Uv5reMJ.gif') no-repeat center center fixed;
+      background-size: cover;
       font-family: 'Poppins', sans-serif;
       color: #fff;
       text-align: center;
       overflow: hidden;
+      position: relative;
     }
 
-    /* Typing Effect */
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 100%; }
-    }
-
-    @keyframes blink {
-      50% { border-color: transparent; }
-    }
-
-    .welcome-container {
-      max-width: 90%;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
-    }
-
-    .welcome-message {
+    /* Top-left Clock */
+    .clock {
+      position: absolute;
+      top: 10px;
+      left: 10px;
       font-size: 18px;
       font-weight: bold;
-      color: #00eaff;
-      display: inline-block;
-      white-space: pre-wrap; /* Allows line breaks */
-      overflow: hidden;
-      border-right: 3px solid #00eaff;
-      animation: typing 3s steps(40, end), blink 0.75s step-end infinite;
+      padding: 10px;
+      border-radius: 5px;
+      background: linear-gradient(90deg, #ff00ff, #ff6600);
+      box-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
     }
 
-    .continue-btn {
-      margin-top: 10px;
-      padding: 10px 20px;
+    /* Top-right Battery Status */
+    .battery-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
       font-size: 16px;
       font-weight: bold;
-      color: white;
-      background: linear-gradient(90deg, #00eaff, #007bff);
-      border: none;
+      padding: 10px;
       border-radius: 5px;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.5);
-      display: none;
+      transition: 0.3s;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
 
-    /* Glowing Container */
+    .charging { background: #00ff00; color: black; }
+    .low-battery { background: #ff0000; color: white; }
+    .normal { background: #007bff; color: white; }
+
+    /* Container */
     .container {
-      background: rgba(0, 255, 0, 0.15);
+      background: rgba(0, 0, 0, 0.7);
       padding: 20px;
       border-radius: 15px;
-      backdrop-filter: blur(15px);
-      box-shadow: 0 0 25px rgba(0, 255, 0, 0.7);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
       max-width: 420px;
       text-align: center;
-      display: none;
     }
 
-    /* Modern Buttons */
+    /* Button Grid */
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
     .btn {
-      width: 260px;
-      padding: 14px;
+      width: 100%;
+      padding: 12px;
       background: linear-gradient(90deg, #00eaff, #007bff);
       border: none;
       border-radius: 10px;
       color: white;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.4s;
-      margin: 10px;
-      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.5);
+      transition: 0.3s;
+      box-shadow: 0 5px 10px rgba(0, 255, 255, 0.5);
     }
 
     .btn:hover {
@@ -97,91 +93,74 @@
       transform: scale(1.05);
     }
 
-    /* Digital Clock */
-    .clock {
-      font-size: 20px;
-      font-weight: bold;
-      padding: 12px;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #ff00ff, #ff6600);
-      box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+    /* IP Address & Device Model */
+    .device-info {
+      position: absolute;
+      bottom: 50px;
+      font-size: 14px;
+      color: #fff;
     }
 
-    /* Battery Status Button */
-    .battery-btn {
+    /* Kenyan Flag Animation */
+    .kenya {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 16px;
       font-weight: bold;
-      padding: 12px;
-      border-radius: 10px;
-      width: 240px;
-      border: none;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-top: 10px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      margin-top: 20px;
+      animation: pulse 1.5s infinite alternate;
     }
 
-    /* Charging (Green), Low Battery (Red), Normal (Blue) */
-    .charging { background: #00ff00; color: black; }
-    .low-battery { background: #ff0000; color: white; }
-    .normal { background: #007bff; color: white; }
+    .kenya img {
+      width: 30px;
+      margin-left: 5px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1); }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Welcome Message -->
-  <div class="welcome-container">
-    <p class="welcome-message" id="welcome-text"></p>
-    <button class="continue-btn" onclick="showMainMenu()">Continue</button>
-  </div>
+  <!-- Clock (Top-left) -->
+  <button id="clock" class="clock">Loading Time...</button>
+
+  <!-- Battery Status (Top-right) -->
+  <button id="battery-status" class="battery-btn normal">Checking Battery...</button>
 
   <!-- Main Content -->
   <div class="container">
     <h2>Welcome to <span style="color:#00eaff;">VOXNET.Inc</span></h2>
     <p>Your Smart Digital Hub</p>
 
-    <!-- Buttons -->
-    <button onclick="window.open('/pair')" class="btn">Pair Code</button>
-    <button onclick="window.open('/qr')" class="btn">Scan QR Code</button>
-    <button onclick="window.open('https://github.com/Vox-Net/VOX-MD')" class="btn">Bot Repo</button>
-    <button onclick="window.open('https://github.com/Kanambp/KANAMBO-QR')" class="btn">QR Code Repo</button>
-    <button onclick="window.open('https://wa.me/254114148625')" class="btn">Contact Kanambo</button>
-    <button onclick="window.open('https://chat.whatsapp.com/Byx7wdqizJXB79RKFKsefb')" class="btn">Join Group</button>
+    <!-- Button Grid -->
+    <div class="button-grid">
+      <button onclick="window.open('/pair')" class="btn">Pair Code</button>
+      <button onclick="window.open('/qr')" class="btn">Scan QR Code</button>
+      <button onclick="window.open('https://github.com/Vox-Net/VOX-MD')" class="btn">Bot Repo</button>
+      <button onclick="window.open('https://github.com/Kanambp/KANAMBO-QR')" class="btn">QR Code Repo</button>
+      <button onclick="window.open('https://wa.me/254114148625')" class="btn">Contact Kanambo</button>
+      <button onclick="window.open('https://chat.whatsapp.com/Byx7wdqizJXB79RKFKsefb')" class="btn">Join Group</button>
+    </div>
 
-    <!-- Digital Clock -->
-    <button id="clock" class="clock">Loading Time...</button>
+    <!-- Kenyan Flag Animation -->
+    <div class="kenya">
+      A product of Kenya <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Flag_of_Kenya.svg/2560px-Flag_of_Kenya.svg.png" alt="Kenyan Flag">
+    </div>
+  </div>
 
-    <!-- Battery Status & IP Address -->
-    <button id="battery-status" class="battery-btn normal">Checking Battery...</button>
+  <!-- IP Address & Device Model -->
+  <div class="device-info">
+    <p id="ip-address">Fetching IP...</p>
+    <p id="device-model">Detecting Device...</p>
   </div>
 
   <!-- JavaScript -->
   <script>
-    // Typing effect
-    const welcomeText = `Welcome to VOXNET.Inc! 
-    We are here to serve you. 
-    Feel at home under the courtesy of MR. PETER KANAMBO.`;
-
-    let i = 0;
-    function typeWriter() {
-      if (i < welcomeText.length) {
-        document.getElementById("welcome-text").innerHTML += welcomeText.charAt(i);
-        i++;
-        setTimeout(typeWriter, 40);
-      } else {
-        document.querySelector(".continue-btn").style.display = "block";
-      }
-    }
-    typeWriter();
-
-    // Show Main Menu
-    function showMainMenu() {
-      document.querySelector(".welcome-container").style.display = "none";
-      document.querySelector(".container").style.display = "block";
-    }
-
-    // Digital Clock
+    // Update Clock
     function updateClock() {
       const now = new Date();
       document.getElementById('clock').innerText = now.toLocaleTimeString();
@@ -214,6 +193,28 @@
       });
     }
     getBatteryInfo();
+
+    // Fetch IP Address
+    fetch('https://api64.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('ip-address').innerText = `IP: ${data.ip}`;
+      })
+      .catch(() => {
+        document.getElementById('ip-address').innerText = "IP: Unable to fetch";
+      });
+
+    // Detect Device Model
+    const userAgent = navigator.userAgent.toLowerCase();
+    let deviceType = "Unknown Device";
+
+    if (userAgent.includes("iphone")) deviceType = "iPhone";
+    else if (userAgent.includes("ipad")) deviceType = "iPad";
+    else if (userAgent.includes("android")) deviceType = "Android Device";
+    else if (userAgent.includes("mac")) deviceType = "Mac";
+    else if (userAgent.includes("windows")) deviceType = "Windows PC";
+
+    document.getElementById("device-model").innerText = `Device: ${deviceType}`;
   </script>
 
 </body>
