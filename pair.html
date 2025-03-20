@@ -16,47 +16,49 @@
       overflow: hidden;
       background: black;
     }
-/* Digital 3D Glowing Footer */
-.glowing-footer {
-  font-size: 2.5rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  text-align: center;
-  position: absolute;
-  bottom: 15px; /* Adjusted to keep it near the container */
-  left: 50%;
-  transform: translateX(-50%);
-  color: #00d9ff;
-  text-shadow: 0 0 10px #00d9ff, 0 0 20px #ff00ff, 0 0 40px #ff0055, 0 0 80px #0088ff;
-  animation: glowCycle 3s infinite alternate;
-}
 
-/* Animation for Smooth Color Change */
-@keyframes glowCycle {
-  0% {
-    text-shadow: 0 0 10px #00d9ff, 0 0 20px #ff00ff, 0 0 40px #ff0055, 0 0 80px #0088ff;
-  }
-  25% {
-    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff, 0 0 40px #ff0088, 0 0 80px #00ff88;
-  }
-  50% {
-    text-shadow: 0 0 10px #ff0055, 0 0 20px #0088ff, 0 0 40px #00ffff, 0 0 80px #ff00ff;
-  }
-  75% {
-    text-shadow: 0 0 10px #00ff88, 0 0 20px #ff0088, 0 0 40px #0088ff, 0 0 80px #00d9ff;
-  }
-  100% {
-    text-shadow: 0 0 10px #0088ff, 0 0 20px #00d9ff, 0 0 40px #ff00ff, 0 0 80px #ff0055;
-  }
-}
+    /* Digital 3D Glowing Footer */
+    .glowing-footer {
+      font-size: 2.5rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-align: center;
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #00d9ff;
+      text-shadow: 0 0 10px #00d9ff, 0 0 20px #ff00ff, 0 0 40px #ff0055, 0 0 80px #0088ff;
+      animation: glowCycle 3s infinite alternate;
+    }
+
+    /* Animation for Smooth Color Change */
+    @keyframes glowCycle {
+      0% {
+        text-shadow: 0 0 10px #00d9ff, 0 0 20px #ff00ff, 0 0 40px #ff0055, 0 0 80px #0088ff;
+      }
+      25% {
+        text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff, 0 0 40px #ff0088, 0 0 80px #00ff88;
+      }
+      50% {
+        text-shadow: 0 0 10px #ff0055, 0 0 20px #0088ff, 0 0 40px #00ffff, 0 0 80px #ff00ff;
+      }
+      75% {
+        text-shadow: 0 0 10px #00ff88, 0 0 20px #ff0088, 0 0 40px #0088ff, 0 0 80px #00d9ff;
+      }
+      100% {
+        text-shadow: 0 0 10px #0088ff, 0 0 20px #00d9ff, 0 0 40px #ff00ff, 0 0 80px #ff0055;
+      }
+    }
+
     /* Full-Screen Background GIF */
-.waves {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: url("https://files.catbox.moe/x1xups.gif") center center no-repeat;
-  background-size: cover;
-  z-index: -1;
+    .waves {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: url("https://files.catbox.moe/x1xups.gif") center center no-repeat;
+      background-size: cover;
+      z-index: -1;
     }
 
     .container {
@@ -68,7 +70,6 @@
       padding: 20px;
       border-radius: 15px;
       box-shadow: 0 0 6px rgba(250, 249, 249, 0.8);
-      backdrop-filter: blur(-3px);
     }
 
     .box {
@@ -103,7 +104,6 @@
       background: rgba(255, 255, 255, 0.2);
       color: white;
       outline: none;
-      backdrop-filter: blur(10px);
     }
 
     .input-container button {
@@ -136,6 +136,25 @@
       100% { opacity: 1; }
     }
 
+    /* Music Control Button */
+    .music-button {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      padding: 10px 15px;
+      background: #ff00ff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .music-button:hover {
+      background: #c01736;
+    }
+
     /* Mobile Responsive */
     @media (max-width: 500px) {
       .box {
@@ -166,12 +185,12 @@
         <h3 class="centered-text">VOX-MD PAIRING CODE</h3>
         <h6>Made By KANAMBO TECH 🔥</h6>
         <h6>Enter Your Number with Country Code</h6>
-        
+
         <div class="input-container">
           <input placeholder="254xxxx" type="number" id="number">
           <button id="submit">REQUEST CODE</button>
         </div>
-        
+
         <a id="waiting-message">♻️ KANAMBO on it... please wait!</a>
         <br><br>
         <main id="pair"></main>
@@ -179,58 +198,31 @@
     </div>
   </div>
 
-  <!-- Background Wave Sound -->
-  <audio autoplay loop>
+  <!-- Background Music -->
+  <audio id="background-music" autoplay loop>
     <source src="https://files.catbox.moe/m68e4q.mp3" type="audio/mpeg">
   </audio>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <!-- Music Control Button -->
+  <button id="music-toggle" class="music-button">⏸ Pause Music</button>
+
   <script>
-    let pairMessage = document.getElementById("pair");
-    let submitButton = document.getElementById("submit");
-    let numberInput = document.getElementById("number");
-    let waitingMessage = document.getElementById("waiting-message");
+    let music = document.getElementById("background-music");
+    let musicToggle = document.getElementById("music-toggle");
 
-    async function Copy() {
-      let text = document.getElementById("copy").innerText;
-      let obj = document.getElementById("copy");
-      await navigator.clipboard.writeText(obj.innerText.replace('CODE: ', ''));
-      obj.innerText = "COPIED";
-      obj.style = "color:blue;font-weight:bold";
-      setTimeout(() => {
-        obj.innerText = text;
-        obj.style = "color:white;font-weight-bold";
-      }, 500);
-    }
-
-    submitButton.addEventListener("click", async (e) => {
-      e.preventDefault();
-      if (!numberInput.value) {
-        pairMessage.innerHTML = '<a style="color:white;font-weight:bold">Enter your WhatsApp number with Country Code</a><br><br>';
-      } else if (numberInput.value.replace(/[^0-9]/g, "").length < 11) {
-        pairMessage.innerHTML = '<a style="color:red;font-weight:bold">Invalid Number</a><br><br>';
+    musicToggle.addEventListener("click", () => {
+      if (music.paused) {
+        music.play();
+        musicToggle.innerHTML = "⏸ Pause Music";
       } else {
-        waitingMessage.style.display = "block"; // Show waiting message
-        numberInput.disabled = true;
-        submitButton.disabled = true;
-
-        let formattedNumber = numberInput.value.replace(/[^0-9]/g, "");
-        numberInput.type = "text";
-        numberInput.value = "+" + formattedNumber;
-        numberInput.style = "color:black;font-size:20px";
-
-        let { data } = await axios(`/code?number=${formattedNumber}`);
-        let code = data.code || "Service Unavailable";
-        
-        waitingMessage.style.display = "none"; // Hide waiting message
-        numberInput.disabled = false;
-        submitButton.disabled = false;
-
-        pairMessage.innerHTML = `<font id="copy" onclick="Copy()" style="color:red;font-weight:bold">CODE: <span style="color:white;font-weight:bold">${code}</span></font><br><br>`;
+        music.pause();
+        musicToggle.innerHTML = "▶ Play Music";
       }
     });
   </script>
-<!-- 3D Glowing Footer -->
-<h1 class="glowing-footer">VOX-MD</h1>
+
+  <!-- 3D Glowing Footer -->
+  <h1 class="glowing-footer">VOX-MD</h1>
+
 </body>
 </html>
