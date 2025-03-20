@@ -1,31 +1,28 @@
 const express = require('express');
 const app = express();
-const path = require('path'); 
+__path = process.cwd()
 const bodyParser = require("body-parser");
-
 const PORT = process.env.PORT || 8000;
-const code = require('./pair'); 
-
+let server = require('./qr'),
+code = require('./pair');
 require('events').EventEmitter.defaultMaxListeners = 500;
-
+app.use('/qr', server);
+app.use('/code', code);
+app.use('/pair',async (req, res, next) => {
+res.sendFile(__path + '/pair.html')
+})
+app.use('/',async (req, res, next) => {
+res.sendFile(__path + '/Vox.html')
+})
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use('/code', code);
-
-// ✅ Serve `pair.html` when visiting `/`
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'pair.html'));
-});
-
-app.use('/pair', (req, res) => {
-    res.sendFile(path.join(__dirname, 'pair.html'));
-});
-
 app.listen(PORT, () => {
-    console.log(`
-Don't Forget To Give Star 🌟
-Server running on http://localhost:${PORT}`);
-});
+console.log(`
+Don't Forget To Give star to my repo🌟 welcome to KANAMBOTech 🥷💓
 
-module.exports = app;
+Server running on http://localhost:` + PORT)
+})
+
+module.exports = app
+
+  
