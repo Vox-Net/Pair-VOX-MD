@@ -4,18 +4,33 @@
   <meta charset="UTF-8">
   <title>VOXNET.Inc</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <style>
-    /* Machine-Like Animated Background */
+    /* Reset Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Fullscreen Background Video */
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    /* Body Styles */
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      margin: 0;
-      background: url('https://files.catbox.moe/uxe661.mp4') no-repeat center center fixed;
-      background-size: cover;
       font-family: 'Poppins', sans-serif;
       color: #fff;
       text-align: center;
@@ -54,7 +69,7 @@
     .low-battery { background: #ff0000; color: white; }
     .normal { background: #007bff; color: white; }
 
-    /* Container */
+    /* Content Container */
     .container {
       background: rgba(0, 0, 0, 0.7);
       padding: 20px;
@@ -63,6 +78,7 @@
       box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
       max-width: 420px;
       text-align: center;
+      z-index: 1;
     }
 
     /* Button Grid */
@@ -124,6 +140,12 @@
   </style>
 </head>
 <body>
+
+  <!-- Background Video -->
+  <video class="video-bg" autoplay loop muted playsinline>
+    <source src="https://files.catbox.moe/uxe661.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 
   <!-- Clock (Top-left) -->
   <button id="clock" class="clock">Loading Time...</button>
