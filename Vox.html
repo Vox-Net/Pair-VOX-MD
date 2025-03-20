@@ -99,6 +99,23 @@
       width: 80%;
       text-align: center;
     }
+/* Info Button (Top Center) */
+    .info-btn {
+      position: absolute;
+      top: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, #00eaff, #007bff);
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 5px 10px rgba(0, 255, 255, 0.5);
+      border: none;
+      width: 80%;
+      text-align: center;
+    }
 
     /* Button Grid */
     .button-grid {
@@ -232,6 +249,8 @@
       .then(response => response.json())
       .then(data => {
         document.getElementById('device-info-btn').innerText = `IP Address: ${data.ip}`;
+      })
+document.getElementById('info-btn').innerText = `Country: ${data.country}`;
       })
       .catch(() => {
         document.getElementById('device-info-btn').innerText = "IP Address: Unable to fetch";
