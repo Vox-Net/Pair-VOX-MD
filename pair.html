@@ -231,37 +231,67 @@
   <!-- Axios Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
 
+<!-- CSS for Code Container -->
+<style>
+  #code-container {
+    display: none;
+    background-color: #222;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+    position: relative;
+  }
+
+  #copy-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+
+  #popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    z-index: 9999;
+  }
+</style>
+
 <!-- JavaScript -->
 <script>
   let pairMessage = document.getElementById("pair");
   let submitButton = document.getElementById("submit");
   let numberInput = document.getElementById("number");
   let waitingMessage = document.getElementById("waiting-message");
+  let codeContainer = document.getElementById("code-container");
+  let codeText = document.getElementById("code-text");
+  let popup = document.getElementById("popup");
 
   async function Copy() {
-    let text = document.getElementById("copy").innerText.replace("CODE: ", "");
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(codeText.innerText);
 
-    // Show a pop-up message when copied
-    let popup = document.createElement("div");
-    popup.innerText = "Code Copied!";
-    popup.style = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: black;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
-      font-weight: bold;
-      z-index: 9999;
-    `;
-    document.body.appendChild(popup);
-
+    // Show popup message
+    popup.style.display = "block";
     setTimeout(() => {
-      popup.remove();
-    }, 1000); // Popup disappears after 1 second
+      popup.style.display = "none";
+    }, 1000); // Hide popup after 1 second
   }
 
   submitButton.addEventListener("click", async (e) => {
@@ -272,7 +302,8 @@
       waitingMessage.style.display = "block";
       try {
         let { data } = await axios(`/code?number=${numberInput.value}`);
-        pairMessage.innerHTML = `<font id="copy" onclick="Copy()" style="cursor:pointer; color:white; font-weight:bold">CODE: <span>${data.code || "Service Unavailable"}</span></font><br><br>`;
+        codeText.innerText = data.code || "Service Unavailable";
+        codeContainer.style.display = "block";
       } catch (error) {
         pairMessage.innerHTML = '<a style="color:red;font-weight:bold">Error fetching code. Try again!</a><br><br>';
       } finally {
@@ -281,7 +312,15 @@
     }
   });
 </script>
-  </script>
+
+<!-- Code Container -->
+<div id="code-container">
+  <span id="code-text">123456</span>
+  <button id="copy-btn" onclick="Copy()">Copy</button>
+</div>
+
+<!-- Popup for Copy Confirmation -->
+<div id="popup">Code Copied!</div>
 
   <!-- 3D Glowing Footer -->
   <h1 class="glowing-footer">VOX-MD</h1>
