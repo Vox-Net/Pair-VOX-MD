@@ -31,10 +31,8 @@
       50% { border-color: transparent; }
     }
 
-    /* Welcome Message */
     .welcome-container {
-      text-align: center;
-      max-width: 600px;
+      max-width: 90%;
       padding: 20px;
       background: rgba(0, 0, 0, 0.7);
       border-radius: 10px;
@@ -42,11 +40,11 @@
     }
 
     .welcome-message {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
       color: #00eaff;
       display: inline-block;
-      white-space: nowrap;
+      white-space: pre-wrap; /* Allows line breaks */
       overflow: hidden;
       border-right: 3px solid #00eaff;
       animation: typing 3s steps(40, end), blink 0.75s step-end infinite;
@@ -66,26 +64,19 @@
       display: none;
     }
 
-    .continue-btn:hover {
-      background: linear-gradient(90deg, #007bff, #00eaff);
-      transform: scale(1.05);
-    }
-
-    /* Glowing Green Container */
+    /* Glowing Container */
     .container {
       background: rgba(0, 255, 0, 0.15);
-      padding: 25px;
+      padding: 20px;
       border-radius: 15px;
       backdrop-filter: blur(15px);
       box-shadow: 0 0 25px rgba(0, 255, 0, 0.7);
       max-width: 420px;
       text-align: center;
-      position: relative;
-      z-index: 10;
       display: none;
     }
 
-    /* Modern Stylish Buttons */
+    /* Modern Buttons */
     .btn {
       width: 260px;
       padding: 14px;
@@ -95,13 +86,10 @@
       color: white;
       font-size: 18px;
       font-weight: bold;
-      text-transform: uppercase;
       cursor: pointer;
       transition: 0.4s;
-      margin: 12px;
+      margin: 10px;
       box-shadow: 0 5px 15px rgba(0, 255, 255, 0.5);
-      position: relative;
-      overflow: hidden;
     }
 
     .btn:hover {
@@ -111,23 +99,33 @@
 
     /* Digital Clock */
     .clock {
-      margin-top: 20px;
       font-size: 20px;
       font-weight: bold;
       padding: 12px;
-      width: 220px;
       border-radius: 10px;
-      text-align: center;
       background: linear-gradient(90deg, #ff00ff, #ff6600);
       box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
     }
 
-    /* Device Info */
-    .device-info {
-      margin-top: 15px;
+    /* Battery Status Button */
+    .battery-btn {
       font-size: 16px;
-      color: #00eaff;
+      font-weight: bold;
+      padding: 12px;
+      border-radius: 10px;
+      width: 240px;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
+
+    /* Charging (Green), Low Battery (Red), Normal (Blue) */
+    .charging { background: #00ff00; color: black; }
+    .low-battery { background: #ff0000; color: white; }
+    .normal { background: #007bff; color: white; }
   </style>
 </head>
 <body>
@@ -138,12 +136,12 @@
     <button class="continue-btn" onclick="showMainMenu()">Continue</button>
   </div>
 
-  <!-- Cyberpunk Glowing Container -->
+  <!-- Main Content -->
   <div class="container">
     <h2>Welcome to <span style="color:#00eaff;">VOXNET.Inc</span></h2>
     <p>Your Smart Digital Hub</p>
 
-    <!-- Stylish Buttons -->
+    <!-- Buttons -->
     <button onclick="window.open('/pair')" class="btn">Pair Code</button>
     <button onclick="window.open('/qr')" class="btn">Scan QR Code</button>
     <button onclick="window.open('https://github.com/Vox-Net/VOX-MD')" class="btn">Bot Repo</button>
@@ -154,27 +152,30 @@
     <!-- Digital Clock -->
     <button id="clock" class="clock">Loading Time...</button>
 
-    <!-- Device Info -->
-    <div class="device-info" id="device-info">Detecting Device Info...</div>
+    <!-- Battery Status & IP Address -->
+    <button id="battery-status" class="battery-btn normal">Checking Battery...</button>
   </div>
 
   <!-- JavaScript -->
   <script>
-    // Typing effect for welcome message
-    const welcomeText = "Welcome to VOXNET.Inc! We are here to serve you. Feel at home under the courtesy of MR. PETER KANAMBO.";
+    // Typing effect
+    const welcomeText = `Welcome to VOXNET.Inc! 
+    We are here to serve you. 
+    Feel at home under the courtesy of MR. PETER KANAMBO.`;
+
     let i = 0;
     function typeWriter() {
       if (i < welcomeText.length) {
         document.getElementById("welcome-text").innerHTML += welcomeText.charAt(i);
         i++;
-        setTimeout(typeWriter, 50);
+        setTimeout(typeWriter, 40);
       } else {
         document.querySelector(".continue-btn").style.display = "block";
       }
     }
     typeWriter();
 
-    // Show main menu after clicking continue
+    // Show Main Menu
     function showMainMenu() {
       document.querySelector(".welcome-container").style.display = "none";
       document.querySelector(".container").style.display = "block";
@@ -183,35 +184,36 @@
     // Digital Clock
     function updateClock() {
       const now = new Date();
-      const options = { timeZone: 'Africa/Nairobi', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-      document.getElementById('clock').innerText = new Intl.DateTimeFormat('en-US', options).format(now);
+      document.getElementById('clock').innerText = now.toLocaleTimeString();
     }
     setInterval(updateClock, 1000);
     updateClock();
 
-    // Device Info
-    function getDeviceInfo() {
-      let deviceInfo = "Unknown Device";
-      const userAgent = navigator.userAgent.toLowerCase();
-
-      if (/android/.test(userAgent)) deviceInfo = "Android Device";
-      else if (/iphone|ipad|ipod/.test(userAgent)) deviceInfo = "iOS Device";
-      else if (/windows/.test(userAgent)) deviceInfo = "Windows PC";
-      else if (/mac/.test(userAgent)) deviceInfo = "Mac PC";
-
+    // Battery Status
+    function getBatteryInfo() {
       navigator.getBattery().then(battery => {
-        document.getElementById("device-info").innerHTML = `
-          📱 Device: ${deviceInfo} <br>
-          ⚡ Charging: ${battery.charging ? "Yes" : "No"} <br>
-          🔋 Battery Level: ${(battery.level * 100).toFixed(0)}% <br>
-        `;
-      });
+        function updateBattery() {
+          const level = Math.round(battery.level * 100);
+          let statusText = `🔋 ${level}%`;
+          let statusClass = "normal";
 
-      fetch("https://api.ipify.org?format=json")
-        .then(response => response.json())
-        .then(data => document.getElementById("device-info").innerHTML += `🌍 IP Address: ${data.ip}`);
+          if (battery.charging) {
+            statusText += " (Charging ⚡)";
+            statusClass = "charging";
+          } else if (level <= 20) {
+            statusText += " (Low Battery ⚠️)";
+            statusClass = "low-battery";
+          }
+
+          document.getElementById("battery-status").innerText = statusText;
+          document.getElementById("battery-status").className = `battery-btn ${statusClass}`;
+        }
+        updateBattery();
+        battery.addEventListener("levelchange", updateBattery);
+        battery.addEventListener("chargingchange", updateBattery);
+      });
     }
-    getDeviceInfo();
+    getBatteryInfo();
   </script>
 
 </body>
