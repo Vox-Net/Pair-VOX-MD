@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <style>
-    /* Background Animation */
+    /* Cyberpunk Neon Background */
     body {
       display: flex;
       flex-direction: column;
@@ -14,7 +14,7 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-      background: linear-gradient(135deg, #1e1e2f, #252545, #2d2d5b);
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
       font-family: 'Poppins', sans-serif;
       color: #fff;
       text-align: center;
@@ -22,7 +22,7 @@
       position: relative;
     }
 
-    /* Animated Background */
+    /* Glowing Animated Background */
     body::before {
       content: "";
       position: absolute;
@@ -30,7 +30,7 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle, rgba(0, 123, 255, 0.3), transparent 50%);
+      background: radial-gradient(circle, rgba(0, 255, 255, 0.3), transparent 50%);
       animation: pulse 6s infinite alternate;
     }
 
@@ -44,7 +44,7 @@
       background: rgba(255, 255, 255, 0.1);
       padding: 20px;
       border-radius: 15px;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(15px);
       box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
       max-width: 400px;
       text-align: center;
@@ -52,11 +52,11 @@
       z-index: 10;
     }
 
-    /* Modern Neon Buttons */
+    /* Glowing Cyber Buttons */
     .btn {
       width: 260px;
       padding: 14px;
-      background: linear-gradient(90deg, #007bff, #0056b3);
+      background: linear-gradient(90deg, #00eaff, #007bff);
       border: none;
       border-radius: 10px;
       color: white;
@@ -67,7 +67,7 @@
       transition: 0.4s ease-in-out;
       margin: 12px;
       text-align: center;
-      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.5);
       position: relative;
       overflow: hidden;
     }
@@ -88,8 +88,8 @@
     }
 
     .btn:hover {
-      background: linear-gradient(90deg, #0056b3, #007bff);
-      box-shadow: 0 8px 20px rgba(0, 123, 255, 0.6);
+      background: linear-gradient(90deg, #007bff, #00eaff);
+      box-shadow: 0 8px 20px rgba(0, 255, 255, 0.6);
     }
 
     /* User Info Styling */
@@ -99,10 +99,28 @@
       color: #ddd;
     }
 
-    /* Battery Status */
-    #batteryStatus {
+    /* Battery Status Button */
+    .battery-btn {
+      width: 200px;
+      padding: 10px;
+      background: #32CD32;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
       font-weight: bold;
-      color: #4CAF50;
+      color: white;
+      box-shadow: 0 0 10px #32CD32;
+      transition: 0.3s;
+    }
+
+    .battery-btn.low {
+      background: #FF4500;
+      box-shadow: 0 0 10px #FF4500;
+    }
+
+    .battery-btn.charging {
+      background: #FFD700;
+      box-shadow: 0 0 10px #FFD700;
     }
 
   </style>
@@ -111,16 +129,18 @@
 
   <!-- Glassmorphic Info Box -->
   <div class="container">
-    <h2>Welcome to <span style="color:#007bff;">VOXNET.Inc</span></h2>
+    <h2>Welcome to <span style="color:#00eaff;">VOXNET.Inc</span></h2>
     <p>Your Smart Digital Hub</p>
 
     <!-- User Information -->
     <div class="user-info">
       <p><strong>IP Address:</strong> <span id="ipAddress">Loading...</span></p>
       <p><strong>Device:</strong> <span id="deviceModel">Detecting...</span></p>
-      <p><strong>Battery:</strong> <span id="batteryLevel">Checking...</span></p>
-      <p><strong>Charging:</strong> <span id="batteryStatus">Detecting...</span></p>
+      <p><strong>Type:</strong> <span id="deviceType">Checking...</span></p>
     </div>
+
+    <!-- Battery Info in a Button -->
+    <button id="batteryBtn" class="battery-btn">Battery: Checking...</button>
 
     <!-- Modern Buttons -->
     <button onclick="window.open('/pair')" class="btn">Pair Code</button>
@@ -131,7 +151,7 @@
     <button onclick="window.open('https://chat.whatsapp.com/Byx7wdqizJXB79RKFKsefb')" class="btn">Join Group</button>
   </div>
 
-  <!-- JavaScript to Fetch User IP, Device Model, and Battery Info -->
+  <!-- JavaScript for Device & Battery Info -->
   <script>
     // Fetch User's IP Address
     fetch('https://api64.ipify.org?format=json')
@@ -139,34 +159,47 @@
       .then(data => document.getElementById('ipAddress').innerText = data.ip)
       .catch(() => document.getElementById('ipAddress').innerText = "Unavailable");
 
-    // Detect Device Model
+    // Detect Device Model & Type
     function getDeviceInfo() {
       const userAgent = navigator.userAgent;
       let device = "Unknown Device";
+      let type = "Unknown";
 
-      if (/iPhone/i.test(userAgent)) device = "iPhone";
-      else if (/iPad/i.test(userAgent)) device = "iPad";
-      else if (/Android/i.test(userAgent)) device = "Android Device";
-      else if (/Windows/i.test(userAgent)) device = "Windows PC";
-      else if (/Macintosh/i.test(userAgent)) device = "MacBook";
-      else if (/Linux/i.test(userAgent)) device = "Linux Machine";
+      if (/iPhone/i.test(userAgent)) {
+        device = "iPhone";
+        type = "Phone";
+      } else if (/iPad/i.test(userAgent)) {
+        device = "iPad";
+        type = "Tablet";
+      } else if (/Android/i.test(userAgent)) {
+        device = "Android Device";
+        type = "Phone";
+      } else if (/Windows/i.test(userAgent) || /Macintosh/i.test(userAgent) || /Linux/i.test(userAgent)) {
+        device = /Windows/i.test(userAgent) ? "Windows PC" : (/Macintosh/i.test(userAgent) ? "MacBook" : "Linux Machine");
+        type = "Desktop";
+      }
 
       document.getElementById('deviceModel').innerText = device;
+      document.getElementById('deviceType').innerText = type;
     }
     getDeviceInfo();
 
-    // Get Battery Percentage and Charging Status
+    // Get Battery Percentage & Charging Status
     navigator.getBattery().then(battery => {
       function updateBatteryStatus() {
-        document.getElementById('batteryLevel').innerText = Math.round(battery.level * 100) + "%";
-        document.getElementById('batteryStatus').innerText = battery.charging ? "Charging ⚡" : "Not Charging 🔋";
+        const batteryBtn = document.getElementById('batteryBtn');
+        let batteryLevel = Math.round(battery.level * 100) + "%";
+        let chargingStatus = battery.charging ? "⚡ Charging" : "🔋 Not Charging";
+
+        batteryBtn.innerText = `Battery: ${batteryLevel} | ${chargingStatus}`;
+
+        batteryBtn.classList.toggle("charging", battery.charging);
+        batteryBtn.classList.toggle("low", battery.level < 0.2 && !battery.charging);
       }
+
       updateBatteryStatus();
       battery.addEventListener('levelchange', updateBatteryStatus);
       battery.addEventListener('chargingchange', updateBatteryStatus);
-    }).catch(() => {
-      document.getElementById('batteryLevel').innerText = "Unavailable";
-      document.getElementById('batteryStatus').innerText = "Unavailable";
     });
 
   </script>
