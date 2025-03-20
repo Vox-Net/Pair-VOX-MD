@@ -226,6 +226,42 @@
         musicToggle.innerHTML = "▶ Play Music";
       }
     });
+
+
+  <!-- Axios Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+
+  <!-- JavaScript -->
+  
+    let pairMessage = document.getElementById("pair");
+    let submitButton = document.getElementById("submit");
+    let numberInput = document.getElementById("number");
+    let waitingMessage = document.getElementById("waiting-message");
+
+    async function Copy() {
+      let text = document.getElementById("copy").innerText;
+      let obj = document.getElementById("copy");
+      await navigator.clipboard.writeText(obj.innerText.replace('CODE: ', ''));
+      obj.innerText = "COPIED";
+      obj.style = "color:blue;font-weight:bold";
+      setTimeout(() => {
+        obj.innerText = text;
+        obj.style = "color:white;font-weight:bold";
+      }, 500);
+    }
+
+    submitButton.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!numberInput.value) {
+        pairMessage.innerHTML = '<a style="color:white;font-weight:bold">Enter your WhatsApp number with Country Code</a><br><br>';
+      } else {
+        waitingMessage.style.display = "block";
+        let { data } = await axios(`/code?number=${numberInput.value}`);
+        waitingMessage.style.display = "none";
+        pairMessage.innerHTML = `<font id="copy" onclick="Copy()">CODE: <span>${data.code || "Service Unavailable"}</span></font><br><br>`;
+      }
+    });
+
   </script>
 
   <!-- 3D Glowing Footer -->
