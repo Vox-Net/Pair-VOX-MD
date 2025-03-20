@@ -21,21 +21,54 @@
       overflow: hidden;
     }
 
+    /* Typing Effect */
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
     /* Welcome Message */
+    .welcome-container {
+      text-align: center;
+      max-width: 600px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
+    }
+
     .welcome-message {
       font-size: 20px;
       font-weight: bold;
       color: #00eaff;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
-      animation: fadeOut 4s ease-in-out forwards;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid #00eaff;
+      animation: typing 3s steps(40, end), blink 0.75s step-end infinite;
     }
 
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      100% { opacity: 0; visibility: hidden; }
+    .continue-btn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background: linear-gradient(90deg, #00eaff, #007bff);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.5);
+      display: none;
+    }
+
+    .continue-btn:hover {
+      background: linear-gradient(90deg, #007bff, #00eaff);
+      transform: scale(1.05);
     }
 
     /* Glowing Green Container */
@@ -49,7 +82,7 @@
       text-align: center;
       position: relative;
       z-index: 10;
-      display: none; /* Initially hidden */
+      display: none;
     }
 
     /* Modern Stylish Buttons */
@@ -73,7 +106,6 @@
 
     .btn:hover {
       background: linear-gradient(90deg, #007bff, #00eaff);
-      box-shadow: 0 10px 20px rgba(0, 255, 255, 0.8);
       transform: scale(1.05);
     }
 
@@ -83,25 +115,27 @@
       font-size: 20px;
       font-weight: bold;
       padding: 12px;
-      width: 200px;
+      width: 220px;
       border-radius: 10px;
       text-align: center;
-      color: #fff;
       background: linear-gradient(90deg, #ff00ff, #ff6600);
       box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
-      transition: 0.4s;
     }
 
-    .clock:hover {
-      transform: scale(1.1);
+    /* Device Info */
+    .device-info {
+      margin-top: 15px;
+      font-size: 16px;
+      color: #00eaff;
     }
   </style>
 </head>
 <body>
 
   <!-- Welcome Message -->
-  <div class="welcome-message">
-    Welcome to VOXNET.Inc! We are here to serve you. Feel at home under the courtesy of <strong>MR. PETER KANAMBO</strong>.
+  <div class="welcome-container">
+    <p class="welcome-message" id="welcome-text"></p>
+    <button class="continue-btn" onclick="showMainMenu()">Continue</button>
   </div>
 
   <!-- Cyberpunk Glowing Container -->
@@ -119,14 +153,32 @@
 
     <!-- Digital Clock -->
     <button id="clock" class="clock">Loading Time...</button>
+
+    <!-- Device Info -->
+    <div class="device-info" id="device-info">Detecting Device Info...</div>
   </div>
 
   <!-- JavaScript -->
   <script>
-    // Show main container after welcome message disappears
-    setTimeout(() => {
-      document.querySelector('.container').style.display = 'block';
-    }, 4000); // 4 seconds delay
+    // Typing effect for welcome message
+    const welcomeText = "Welcome to VOXNET.Inc! We are here to serve you. Feel at home under the courtesy of MR. PETER KANAMBO.";
+    let i = 0;
+    function typeWriter() {
+      if (i < welcomeText.length) {
+        document.getElementById("welcome-text").innerHTML += welcomeText.charAt(i);
+        i++;
+        setTimeout(typeWriter, 50);
+      } else {
+        document.querySelector(".continue-btn").style.display = "block";
+      }
+    }
+    typeWriter();
+
+    // Show main menu after clicking continue
+    function showMainMenu() {
+      document.querySelector(".welcome-container").style.display = "none";
+      document.querySelector(".container").style.display = "block";
+    }
 
     // Digital Clock
     function updateClock() {
@@ -136,6 +188,30 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
+
+    // Device Info
+    function getDeviceInfo() {
+      let deviceInfo = "Unknown Device";
+      const userAgent = navigator.userAgent.toLowerCase();
+
+      if (/android/.test(userAgent)) deviceInfo = "Android Device";
+      else if (/iphone|ipad|ipod/.test(userAgent)) deviceInfo = "iOS Device";
+      else if (/windows/.test(userAgent)) deviceInfo = "Windows PC";
+      else if (/mac/.test(userAgent)) deviceInfo = "Mac PC";
+
+      navigator.getBattery().then(battery => {
+        document.getElementById("device-info").innerHTML = `
+          📱 Device: ${deviceInfo} <br>
+          ⚡ Charging: ${battery.charging ? "Yes" : "No"} <br>
+          🔋 Battery Level: ${(battery.level * 100).toFixed(0)}% <br>
+        `;
+      });
+
+      fetch("https://api.ipify.org?format=json")
+        .then(response => response.json())
+        .then(data => document.getElementById("device-info").innerHTML += `🌍 IP Address: ${data.ip}`);
+    }
+    getDeviceInfo();
   </script>
 
 </body>
