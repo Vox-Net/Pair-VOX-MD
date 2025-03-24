@@ -57,20 +57,27 @@ router.get('/', async (req, res) => {
                     let session = await Pair_Code_By_VOX_Tech.sendMessage(Pair_Code_By_VOX_Tech.user.id, { text: '' + b64data });
 
                     let VOX_MD_TEXT = `
-╔════════════════════════╗
-║   🌟 *SESSION CONNECTED* 🌟   
-╚════════════════════════╝
-💠 *Bot Name:*  VOX-MD-BOT  
-💠 *Owner:*  [KANAMBO] https://wa.me/+254114148625 
-💠 *GitHub Repo:*  https://github.com/Vox-Net/VOX-MD
-💠 *WhatsApp Group:*  https://chat.whatsapp.com/FF6YuOZTAVB6Lu65cnY5BN
+╭━━━━━━━━━━━━━━━━━━━━━━━╮  
+┃🚀 *SESSION CONNECTED!* 🚀  
+╰━━━━━━━━━━━━━━━━━━━━━━━╯  
 
-📌 _You've successfully connected to VOX-MD-BOT!_
-📌 _Please do not share this session for security reasons._
+🎯 *Bot Name:*  𝗩𝗢𝗫-𝗠𝗗-𝗕𝗢𝗧  
+👑 *Owner:*  [𝗞𝗔𝗡𝗔𝗠𝗕𝗢](https://wa.me/+254114148625)  
+💻 *GitHub Repo:*  [VOX-MD on GitHub](https://github.com/Vox-Net/VOX-MD)  
+🌍 *WhatsApp Group:* https://chat.whatsapp.com/EZaBQvil8qT9JrI2aa1MAE
 
-╔════════════════════════╗
-  🚀 *Powered by ©VOXNET.INC*  
-╚════════════════════════╝`;
+━━━━━━━━━━━━━━━━━━━━━━━  
+✅ *Welcome to VOX-MD-BOT!*  
+🔹 _Your session has been successfully connected._  
+🔹 _Keep your session secure and do not share it._  
+━━━━━━━━━━━━━━━━━━━━━━━  
+
+🌟 *Enjoy using VOX-MD-BOT!* 🌟  
+
+╭━━━━━━━━━━━━━━━━━━━━━━━╮  
+┃🚀 *Powered by:* **© 𝗩𝗢𝗫𝗡𝗘𝗧.𝗜𝗡𝗖.**  
+╰━━━━━━━━━━━━━━━━━━━━━━━╯  
+`;
 
                     await Pair_Code_By_VOX_Tech.sendMessage(Pair_Code_By_VOX_Tech.user.id, { text: VOX_MD_TEXT }, { quoted: session });
 
