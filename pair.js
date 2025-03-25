@@ -1,10 +1,14 @@
+require('dotenv').config();
 const PastebinAPI = require('pastebin-js'),
-pastebin = new PastebinAPI('EMWTMkQAVfJa9k-MRUrxd5Oku1U7pgL')
+    pastebin = new PastebinAPI('EMWTMkQAVfJa9k-MRUrxd5Oku1U7pgL');
 const { makeid } = require('./id');
 const express = require('express');
 const fs = require('fs');
+const { exec } = require("child_process");
 let router = express.Router();
 const pino = require("pino");
+const fetch = require("node-fetch");
+
 const {
     default: VOX_Tech,
     useMultiFileAuthState,
@@ -13,14 +17,38 @@ const {
     Browsers
 } = require("maher-zubair-baileys");
 
+const HEROKU_API_KEY = process.env.HEROKU_API_KEY;
+const HEROKU_APP_NAME = process.env.HEROKU_APP_NAME;
+
 function removeFile(FilePath) {
     if (!fs.existsSync(FilePath)) return false;
     fs.rmSync(FilePath, { recursive: true, force: true });
 }
 
-router.get('/', async (req, res) => {
+async function restartHerokuApp() {
+    try {
+        exec(`curl -n -X DELETE https://api.heroku.com/apps/${HEROKU_APP_NAME}/dynos -H "Accept: application/vnd.heroku+json; version=3" -H "Authorization: Bearer ${HEROKU_API_KEY}"`,
+            (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`❌ Error restarting Heroku app: ${error.message}`);
+                    return;
+                }
+                console.log("🔄 Heroku app restarted successfully.");
+            });
+    } catch (err) {
+        console.error("⚠️ Heroku restart failed:", err);
+    }
+}
+
+router.get('/pair', async (req, res) => {
     const id = makeid();
     let num = req.query.number;
+
+    if (!num) {
+        return res.status(400).send({ error: "❌ Please provide a valid phone number. Example: .pair 254114148625" });
+    }
+
+    num = num.replace(/[^0-9]/g, ''); // Sanitize number input
 
     async function VOX_MD_PAIR_CODE() {
         const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
@@ -38,7 +66,6 @@ router.get('/', async (req, res) => {
 
             if (!Pair_Code_By_VOX_Tech.authState.creds.registered) {
                 await delay(1500);
-                num = num.replace(/[^0-9]/g, '');
                 const code = await Pair_Code_By_VOX_Tech.requestPairingCode(num);
                 if (!res.headersSent) {
                     await res.send({ code });
@@ -54,6 +81,7 @@ router.get('/', async (req, res) => {
                     let data = fs.readFileSync(`${__dirname}/temp/${id}/creds.json`);
                     await delay(800);
                     let b64data = Buffer.from(data).toString('base64');
+
                     let session = await Pair_Code_By_VOX_Tech.sendMessage(Pair_Code_By_VOX_Tech.user.id, { text: '' + b64data });
 
                     let VOX_MD_TEXT = `
@@ -87,7 +115,7 @@ router.get('/', async (req, res) => {
 
                     console.log("✅ Session connected. Restarting server...");
                     await delay(3000);
-                    process.exit(1);  // 🔄 Restart the server
+                    await restartHerokuApp();
                 } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
                     await delay(10000);
                     VOX_MD_PAIR_CODE();
