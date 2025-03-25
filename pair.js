@@ -4,11 +4,7 @@ const PastebinAPI = require('pastebin-js'),
 const { makeid } = require('./id');
 const express = require('express');
 const fs = require('fs');
-const { exec } = require("child_process");
-let router = express.Router();
 const pino = require("pino");
-const fetch = require("node-fetch");
-
 const {
     default: VOX_Tech,
     useMultiFileAuthState,
@@ -17,41 +13,25 @@ const {
     Browsers
 } = require("maher-zubair-baileys");
 
-const HEROKU_API_KEY = process.env.HEROKU_API_KEY;
-const HEROKU_APP_NAME = process.env.HEROKU_APP_NAME;
+let router = express.Router();
 
 function removeFile(FilePath) {
     if (!fs.existsSync(FilePath)) return false;
     fs.rmSync(FilePath, { recursive: true, force: true });
 }
 
-async function restartHerokuApp() {
-    try {
-        exec(`curl -n -X DELETE https://api.heroku.com/apps/${HEROKU_APP_NAME}/dynos -H "Accept: application/vnd.heroku+json; version=3" -H "Authorization: Bearer ${HEROKU_API_KEY}"`,
-            (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`❌ Error restarting Heroku app: ${error.message}`);
-                    return;
-                }
-                console.log("🔄 Heroku app restarted successfully.");
-            });
-    } catch (err) {
-        console.error("⚠️ Heroku restart failed:", err);
-    }
-}
-
-router.get('/pair', async (req, res) => {
-    const id = makeid();
+router.get('/', async (req, res) => {
     let num = req.query.number;
 
     if (!num) {
-        return res.status(400).send({ error: "❌ Please provide a valid phone number. Example: .pair 254114148625" });
+        return res.status(400).send({ error: "❌ Phone number is required! Example: ?number=254114148625" });
     }
 
-    num = num.replace(/[^0-9]/g, ''); // Sanitize number input
+    num = num.replace(/[^0-9]/g, '');
+    const id = `session_${num}`; // 🔹 Unique session for each number
 
     async function VOX_MD_PAIR_CODE() {
-        const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
+        const { state, saveCreds } = await useMultiFileAuthState(`./temp/${id}`);
 
         try {
             let Pair_Code_By_VOX_Tech = VOX_Tech({
@@ -67,8 +47,15 @@ router.get('/pair', async (req, res) => {
             if (!Pair_Code_By_VOX_Tech.authState.creds.registered) {
                 await delay(1500);
                 const code = await Pair_Code_By_VOX_Tech.requestPairingCode(num);
+
+                console.log(`✅ Pairing Code for ${num}:`, code);
+
                 if (!res.headersSent) {
-                    await res.send({ code });
+                    res.send({ status: "success", number: num, code });
+                }
+
+                if (req.headers['user-agent'] && req.headers['user-agent'].includes("VOX-BOT")) {
+                    await Pair_Code_By_VOX_Tech.sendMessage(Pair_Code_By_VOX_Tech.user.id, { text: `✅ Your Pairing Code for ${num}: ${code}` });
                 }
             }
 
@@ -79,9 +66,7 @@ router.get('/pair', async (req, res) => {
                 if (connection == "open") {
                     await delay(5000);
                     let data = fs.readFileSync(`${__dirname}/temp/${id}/creds.json`);
-                    await delay(800);
                     let b64data = Buffer.from(data).toString('base64');
-
                     let session = await Pair_Code_By_VOX_Tech.sendMessage(Pair_Code_By_VOX_Tech.user.id, { text: '' + b64data });
 
                     let VOX_MD_TEXT = `
@@ -95,8 +80,8 @@ router.get('/pair', async (req, res) => {
 🌍 *WhatsApp Group:* https://chat.whatsapp.com/EZaBQvil8qT9JrI2aa1MAE
 
 ━━━━━━━━━━━━━━━━━━━━━━━  
-✅ *Welcome to VOX-MD-BOT!*  
-🔹 _Your session has been successfully connected._  
+✅ *Your session has been successfully connected for:*  
+📞 *Number:* ${num}  
 🔹 _Keep your session secure and do not share it._  
 ━━━━━━━━━━━━━━━━━━━━━━━  
 
@@ -111,21 +96,21 @@ router.get('/pair', async (req, res) => {
 
                     await delay(100);
                     await Pair_Code_By_VOX_Tech.ws.close();
-                    await removeFile('./temp/' + id);
+                    await removeFile(`./temp/${id}`);
 
-                    console.log("✅ Session connected. Restarting server...");
+                    console.log(`✅ Session for ${num} connected. Restarting server...`);
                     await delay(3000);
-                    await restartHerokuApp();
+                    process.exit(1);
                 } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
                     await delay(10000);
                     VOX_MD_PAIR_CODE();
                 }
             });
         } catch (err) {
-            console.log("⚠️ Service restarted due to an error.");
-            await removeFile('./temp/' + id);
+            console.log(`⚠️ Service restarted due to an error for ${num}:`, err.message);
+            await removeFile(`./temp/${id}`);
             if (!res.headersSent) {
-                await res.send({ code: "Service Unavailable" });
+                return res.send({ error: "Service Unavailable", details: err.message });
             }
         }
     }
