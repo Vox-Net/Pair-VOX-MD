@@ -64,7 +64,7 @@ router.get('/', async (req, res) => {
             let b64data = Buffer.from(data).toString('base64');  
             let session = await Pair_Code_By_Kanambo_Tech.sendMessage(Pair_Code_By_Kanambo_Tech.user.id, { text: '' + b64data });  
 
-            const imageUrl = "";  
+            const imageUrl = "https://i.postimg.cc/NjymQz1X/VOX-MD-BOT-LOGO.jpg";  
 
             let KANAMBO_MD_TEXT = `
 
