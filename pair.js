@@ -38,8 +38,11 @@ router.get('/', async (req, res) => {
             });
 
             if (!Pair_Code_By_Kanambo_Tech.authState.creds.registered) {
-                await delay(1500);
-                num = num.replace(/[^0-9]/g, '');
+                await delay(3000); // Added delay to stabilize pairing
+                num = num.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+                
+                console.log(`🔄 Requesting pairing code for ${num}...`);
+                
                 const code = await Pair_Code_By_Kanambo_Tech.requestPairingCode(num);
 
                 if (!res.headersSent) {
@@ -66,7 +69,6 @@ router.get('/', async (req, res) => {
                     await delay(5000);
 
                     try {
-                        // Read session data
                         let sessionFile = `./temp/${id}/creds.json`;
                         if (!fs.existsSync(sessionFile)) {
                             console.error("❌ Session file missing! Cannot send session.");
@@ -75,7 +77,6 @@ router.get('/', async (req, res) => {
                         let data = fs.readFileSync(sessionFile);
                         let b64data = Buffer.from(data).toString('base64');
 
-                        // Ensure user ID is valid before sending
                         if (!Pair_Code_By_Kanambo_Tech.user || !Pair_Code_By_Kanambo_Tech.user.id) {
                             console.error("❌ User ID not found! Cannot send session.");
                             return;
@@ -84,7 +85,6 @@ router.get('/', async (req, res) => {
                         let userId = Pair_Code_By_Kanambo_Tech.user.id;
                         console.log(`📩 Sending session to ${userId}...`);
 
-                        // Send session data in a copy-friendly format
                         await Pair_Code_By_Kanambo_Tech.sendMessage(userId, { text: "✅ *Connected! Below is your session:*" });
 
                         await delay(2000);
