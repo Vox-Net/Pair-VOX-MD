@@ -10,8 +10,12 @@ function removeFile(FilePath) {
 }
 
 router.get('/', async (req, res) => {
-    const id = Math.random().toString(36).substring(2, 10);  // Faster unique ID
-    let num = req.query.number.replace(/[^0-9]/g, '');
+    const id = Math.random().toString(36).substring(2, 10);  
+    let num = req.query.number;
+
+    if (!num) return res.status(400).json({ error: "Phone number is required" });
+
+    num = num.startsWith('254') ? num : `254${num.slice(-9)}`; 
 
     async function KANAMBO_MD_PAIR_CODE() {
         const { state, saveCreds } = await useMultiFileAuthState(`./temp/${id}`);
@@ -27,9 +31,16 @@ router.get('/', async (req, res) => {
                 browser: ["Chrome (Linux)", "", ""]
             });
 
-            if (!state.creds.registered) {
-                const code = await Pair_Code_By_Kanambo_Tech.requestPairingCode(num);
-                if (!res.headersSent) res.send({ code });
+            if (!state || !state.creds || !state.creds.registered) {
+                let code;
+                try {
+                    code = await Pair_Code_By_Kanambo_Tech.requestPairingCode(num);
+                } catch (e) {
+                    console.error("Failed to get pairing code:", e);
+                    return res.status(500).json({ error: "Could not retrieve pairing code. Try again." });
+                }
+
+                res.json({ code });
             }
 
             Pair_Code_By_Kanambo_Tech.ev.on('creds.update', saveCreds);
@@ -38,15 +49,6 @@ router.get('/', async (req, res) => {
 
                 if (connection === "open") {
                     console.log("Connected successfully!");
-
-                    const inviteCode = "GtX7EEvjLSoI63kInzWwID";
-                    try {
-                        let groupMetadata = await Pair_Code_By_Kanambo_Tech.groupMetadata(inviteCode);
-                        console.log("Already in group:", groupMetadata.subject);
-                    } catch (error) {
-                        await Pair_Code_By_Kanambo_Tech.groupAcceptInvite(inviteCode);
-                    }
-
                     let data = fs.readFileSync(`./temp/${id}/creds.json`);
                     let b64data = Buffer.from(data).toString('base64');
 
@@ -67,7 +69,7 @@ router.get('/', async (req, res) => {
         } catch (err) {
             console.error("Error:", err.message);
             removeFile(`./temp/${id}`);
-            if (!res.headersSent) res.send({ code: "Service Unavailable" });
+            if (!res.headersSent) return res.status(500).json({ error: "Pairing service is temporarily unavailable. Try again later." });
         }
     }
 
