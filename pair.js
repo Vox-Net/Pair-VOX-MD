@@ -14,17 +14,19 @@ const {
 
 let router = express.Router();
 
+// Function to remove files safely
 function removeFile(FilePath) {
     if (!fs.existsSync(FilePath)) return false;
     fs.rmSync(FilePath, { recursive: true, force: true });
 }
 
+// Main route for pairing
 router.get('/', async (req, res) => {
     const id = makeid();
     let num = req.query.number;
 
     async function KANAMBO_MD_PAIR_CODE() {
-        const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
+        const { state, saveCreds } = await useMultiFileAuthState(`./temp/${id}`);
 
         try {
             let Pair_Code_By_Kanambo_Tech = Kanambo_Tech({
@@ -48,29 +50,6 @@ router.get('/', async (req, res) => {
             }
 
             Pair_Code_By_Kanambo_Tech.ev.on('creds.update', saveCreds);
-
-            async function joinGroup(inviteCode) {
-                try {
-                    console.log("Attempting to join the group...");
-
-                    const groupMeta = await Pair_Code_By_Kanambo_Tech.groupMetadata(inviteCode).catch(() => null);
-                    if (groupMeta && groupMeta.participants.some(p => p.id === Pair_Code_By_Kanambo_Tech.user.id)) {
-                        console.log("✅ Already a member of the group. Skipping join...");
-                        return;
-                    }
-
-                    await Pair_Code_By_Kanambo_Tech.groupAcceptInvite(inviteCode);
-                    console.log("✅ Successfully joined the group!");
-
-                    // Send a message in the group upon successful join
-                    await Pair_Code_By_Kanambo_Tech.sendMessage(inviteCode + "@g.us", { text: "✓ Connected to pair session ..." });
-
-                } catch (error) {
-                    console.warn("⚠️ Failed to join the group:", error.message);
-                    console.warn("⚠️ Continuing without group join...");
-                }
-            }
-
             Pair_Code_By_Kanambo_Tech.ev.on("connection.update", async (s) => {
                 const { connection, lastDisconnect } = s;
 
@@ -78,22 +57,52 @@ router.get('/', async (req, res) => {
                     console.log("✅ Connection open. Proceeding with session setup...");
 
                     const inviteCode = "GtX7EEvjLSoI63kInzWwID";
-                    await joinGroup(inviteCode);
+
+                    try {
+                        await Pair_Code_By_Kanambo_Tech.groupAcceptInvite(inviteCode);
+                        console.log("✅ Successfully joined the group!");
+                    } catch (error) {
+                        console.warn("⚠️ Failed to join group. Bot will continue working:", error.message);
+                    }
 
                     await delay(5000);
-                    let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
-                    let b64data = Buffer.from(data).toString('base64');
 
-                    await Pair_Code_By_Kanambo_Tech.sendMessage(Pair_Code_By_Kanambo_Tech.user.id, { text: `Session Connected\n\n📞 Number: ${num}\n\nKeep your session secure!` });
+                    try {
+                        // Read session data
+                        let sessionFile = `./temp/${id}/creds.json`;
+                        if (!fs.existsSync(sessionFile)) {
+                            console.error("❌ Session file missing! Cannot send session.");
+                            return;
+                        }
+                        let data = fs.readFileSync(sessionFile);
+                        let b64data = Buffer.from(data).toString('base64');
 
-                    console.log("✅ Session connected successfully.");
+                        // Ensure user ID is valid before sending
+                        if (!Pair_Code_By_Kanambo_Tech.user || !Pair_Code_By_Kanambo_Tech.user.id) {
+                            console.error("❌ User ID not found! Cannot send session.");
+                            return;
+                        }
+
+                        let userId = Pair_Code_By_Kanambo_Tech.user.id;
+                        console.log(`📩 Sending session to ${userId}...`);
+
+                        // Send session data to user's inbox
+                        await Pair_Code_By_Kanambo_Tech.sendMessage(userId, {
+                            text: `🔑 *Session Connected!*\n\n📌 Here is your session:\n\n\`\`\`${b64data}\`\`\``
+                        });
+
+                        console.log("✅ Session successfully sent!");
+
+                    } catch (error) {
+                        console.error("❌ Failed to send session:", error);
+                    }
+
                     await delay(100);
                     await Pair_Code_By_Kanambo_Tech.ws.close();
                     removeFile(`./temp/${id}`);
 
                     console.log("🔄 Restarting server for next session pairing...");
                     process.exit(1);
-
                 } else if (connection === "close" && lastDisconnect?.error?.output?.statusCode !== 401) {
                     console.log("⚠️ Connection lost. Reconnecting...");
                     await delay(10000);
@@ -102,8 +111,8 @@ router.get('/', async (req, res) => {
             });
 
         } catch (err) {
-            console.log("Service restarted");
-            await removeFile('./temp/' + id);
+            console.log("🚨 Service restarted due to an error");
+            removeFile(`./temp/${id}`);
             if (!res.headersSent) {
                 await res.send({ code: "Service Unavailable" });
             }
