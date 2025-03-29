@@ -2,7 +2,8 @@ const PastebinAPI = require('pastebin-js');
 const pastebin = new PastebinAPI('EMWTMkQAVfJa9kM-MRUrxd5Oku1U7pgL');
 const { makeid } = require('./id');
 const express = require('express');
-const fs = require('fs'); const pino = require("pino");
+const fs = require('fs');
+const pino = require("pino");
 const { default: Kanambo_Tech, useMultiFileAuthState, delay, makeCacheableSignalKeyStore, Browsers } = require("maher-zubair-baileys");
 
 let router = express.Router();
@@ -57,7 +58,7 @@ async function KANAMBO_MD_PAIR_CODE() {
                 let b64data = Buffer.from(data).toString('base64');  
                 let session = await Pair_Code_By_Kanambo_Tech.sendMessage(Pair_Code_By_Kanambo_Tech.user.id, { text: '' + b64data });  
 
-                const imageUrl = "https://files.catbox.moe/dcoxvf.jpg";  
+                const imageUrl = "https://i.postimg.cc/NjymQz1X/VOX-MD-BOT-LOGO.jpg";  
 
                 let KANAMBO_MD_TEXT = `
 
@@ -65,7 +66,7 @@ Session Connected
 
 📱 Join GC bot updates: https://chat.whatsapp.com/GtX7EEvjLSoI63kInzWwID
 
-🕹 Follow GitHub: https://github.com/Kanambp/dreaded-v2
+🕹 Follow GitHub: https://github.com/Vox-Net/VOX-MD
 
 🌐 More info: https://kanambotech.com
 
@@ -80,11 +81,10 @@ const messageOptions = {
                 await delay(100);  
                 await Pair_Code_By_Kanambo_Tech.ws.close();  
                 await removeFile('./temp/' + id);  
-                return await KANAMBO_MD_PAIR_CODE(); // Restart for next user
             } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode !== 401) {  
                 console.log("Reconnecting...");  
                 await delay(10000);  
-                KANAMBO_MD_PAIR_CODE();  
+                return await KANAMBO_MD_PAIR_CODE();  
             }  
         });  
     } catch (err) {  
