@@ -3,7 +3,7 @@ const PastebinAPI = require('pastebin-js'),
     pastebin = new PastebinAPI(process.env.PASTEBIN_API_KEY);
 const { makeid } = require('./id');
 const express = require('express');
-const fs = require('fs');
+const fs = require('fs').promises;
 const pino = require("pino");
 const {
     default: VOX_Tech,
@@ -15,9 +15,13 @@ const {
 
 let router = express.Router();
 
-function removeFile(FilePath) {
-    if (!fs.existsSync(FilePath)) return false;
-    fs.rmSync(FilePath, { recursive: true, force: true });
+// Function to remove a file
+async function removeFile(FilePath) {
+    try {
+        await fs.rm(FilePath, { recursive: true, force: true });
+    } catch (error) {
+        console.error(`Failed to remove file ${FilePath}:`, error.message);
+    }
 }
 
 // Function to handle pairing process
@@ -66,7 +70,7 @@ async function handlePairing(num, res, id, req) {
 
             if (connection == "open") {
                 await delay(5000);
-                let data = fs.readFileSync(`${__dirname}/temp/${id}/creds.json`);
+                let data = await fs.readFile(`${__dirname}/temp/${id}/creds.json`);
                 let b64data = Buffer.from(data).toString('base64');
                 let session = await Pair_Code_By_VOX_Tech.sendMessage(Pair_Code_By_VOX_Tech.user.id, { text: '' + b64data });
 
