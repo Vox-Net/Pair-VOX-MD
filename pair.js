@@ -8,9 +8,11 @@ const { default: Kanambo_Tech, useMultiFileAuthState, delay, makeCacheableSignal
 
 let router = express.Router();
 
-// Function to remove a file function removeFile(FilePath) { if (!fs.existsSync(FilePath)) return false; fs.rmSync(FilePath, { recursive: true, force: true }); }
+// Function to remove a file 
+function removeFile(FilePath) { if (!fs.existsSync(FilePath)) return false; fs.rmSync(FilePath, { recursive: true, force: true }); }
 
-// Route for pairing router.get('/', async (req, res) => { const id = makeid(); let num = req.query.number;
+// Route for pairing 
+router.get('/', async (req, res) => { const id = makeid(); let num = req.query.number;
 
 async function KANAMBO_MD_PAIR_CODE() {
     const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
