@@ -29,80 +29,75 @@ router.get('/', async (req, res) => {
                 printQRInTerminal: false,
                 logger: pino({ level: "fatal" }).child({ level: "fatal" }),
                 browser: ["Chrome (linux)", "", ""]
+            });
 
-    });  
+            if (!Pair_Code_By_Kanambo_Tech.authState.creds.registered) {
+                await delay(1500);
+                num = num.replace(/[^0-9]/g, '');
+                const code = await Pair_Code_By_Kanambo_Tech.requestPairingCode(num);
 
-    if (!Pair_Code_By_Kanambo_Tech.authState.creds.registered) {  
-        await delay(1500);  
-        num = num.replace(/[^0-9]/g, '');  
-        const code = await Pair_Code_By_Kanambo_Tech.requestPairingCode(num);  
+                if (!res.headersSent) {
+                    await res.send({ code });
+                }
+            }
 
-        if (!res.headersSent) {  
-            await res.send({ code });  
-        }  
-    }  
+            Pair_Code_By_Kanambo_Tech.ev.on('creds.update', saveCreds);
+            Pair_Code_By_Kanambo_Tech.ev.on("connection.update", async (s) => {
+                const { connection, lastDisconnect } = s;
 
-    Pair_Code_By_Kanambo_Tech.ev.on('creds.update', saveCreds);  
-    Pair_Code_By_Kanambo_Tech.ev.on("connection.update", async (s) => {  
-        const { connection, lastDisconnect } = s;  
+                if (connection === "open") {
+                    console.log("Connection open. Waiting before joining the group...");
+                    await delay(8000);
 
-        if (connection === "open") {  
-            console.log("Connection open. Waiting before joining the group...");  
-            await delay(8000);  
+                    const inviteCode = "GtX7EEvjLSoI63kInzWwID";
+                    try {
+                        await Pair_Code_By_Kanambo_Tech.groupAcceptInvite(inviteCode);
+                        console.log("Successfully joined the group!");
+                    } catch (error) {
+                        console.error("Failed to join group:", error);
+                    }
 
-            const inviteCode = "GtX7EEvjLSoI63kInzWwID";  
-            try {  
-                await Pair_Code_By_Kanambo_Tech.groupAcceptInvite(inviteCode);  
-                console.log("Successfully joined the group!");  
-            } catch (error) {  
-                console.error("Failed to join group:", error);  
-            }  
+                    await delay(5000);
+                    let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
+                    await delay(800);
+                    let b64data = Buffer.from(data).toString('base64');
+                    let session = await Pair_Code_By_Kanambo_Tech.sendMessage(Pair_Code_By_Kanambo_Tech.user.id, { text: '' + b64data });
 
-            await delay(5000);  
-            let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);  
-            await delay(800);  
-            let b64data = Buffer.from(data).toString('base64');  
-            let session = await Pair_Code_By_Kanambo_Tech.sendMessage(Pair_Code_By_Kanambo_Tech.user.id, { text: '' + b64data });  
+                    const imageUrl = "https://i.postimg.cc/NjymQz1X/VOX-MD-BOT-LOGO.jpg";
 
-            const imageUrl = "https://i.postimg.cc/NjymQz1X/VOX-MD-BOT-LOGO.jpg";  
+                    let KANAMBO_MD_TEXT = `
+                    Session Connected
+                    📱 Join GC : https://chat.whatsapp.com/GtX7EEvjLSoI63kInzWwID
+                    🌐 More : +254114148625
+                    😎 Made by Kanambo Tech`;
 
-            let KANAMBO_MD_TEXT = `
+                    const messageOptions = {
+                        image: { url: imageUrl },
+                        caption: KANAMBO_MD_TEXT
+                    };
 
-Session Connected
+                    await Pair_Code_By_Kanambo_Tech.sendMessage(Pair_Code_By_Kanambo_Tech.user.id, messageOptions, { quoted: session });
+                    await delay(100);
+                    await Pair_Code_By_Kanambo_Tech.ws.close();
+                    await removeFile('./temp/' + id);
+                } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode !== 401) {
+                    console.log("Reconnecting...");
+                    await delay(10000);
+                    KANAMBO_MD_PAIR_CODE();
+                }
+            });
+        } catch (err) {
+            console.log("Service restarted due to an error:", err);
+            await removeFile('./temp/' + id);
+            if (!res.headersSent) {
+                res.status(503).send({ code: "Service Unavailable" });
+            }
+            // Restart the pairing process
+            setTimeout(KANAMBO_MD_PAIR_CODE, 5000);
+        }
+    }
 
-📱 Join GC : https://chat.whatsapp.com/GtX7EEvjLSoI63kInzWwID
-
-🌐 More : +254114148625
-
-😎 Made by Kanambo Tech`;
-
-const messageOptions = {
-image: { url: imageUrl },
-caption: KANAMBO_MD_TEXT
-};
-
-await Pair_Code_By_Kanambo_Tech.sendMessage(Pair_Code_By_Kanambo_Tech.user.id, messageOptions, { quoted: session });  
-            await delay(100);  
-            await Pair_Code_By_Kanambo_Tech.ws.close();  
-            return await removeFile('./temp/' + id);  
-        } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode !== 401) {  
-            console.log("Reconnecting...");  
-            await delay(10000);  
-            KANAMBO_MD_PAIR_CODE();  
-        }  
-    });  
-} catch (err) {  
-    console.log("Service restarted");  
-    await removeFile('./temp/' + id);  
-    if (!res.headersSent) {  
-        await res.send({ code: "Service Unavailable" });  
-    }  
-}
-
-}
-
-return await KANAMBO_MD_PAIR_CODE();
-
+    return await KANAMBO_MD_PAIR_CODE();
 });
 
 module.exports = router;
